@@ -7,6 +7,7 @@
                  [org.clojure/data.json "2.4.0"]
                  [org.clojure/tools.cli "1.0.214"]
                  [babashka/babashka.curl "0.1.2"]
+                 [babashka/process "0.4.16"]
                  [clj-commons/clj-yaml "1.0.26"]]
   :main ^:skip-aot devneya.core
   :target-path "target/%s"

@@ -11,7 +11,7 @@
 
 (def cli-options
   [["-o" "--output-filename FILE" "Output file path"
-    :default "./code.js"]
+    :default "./code-path/code.js"]
    ["-x" "--[no-]exec" "Execute the code"
     :default false]
    ["-h" "--help"]])
