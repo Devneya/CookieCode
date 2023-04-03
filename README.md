@@ -1,25 +1,36 @@
-# code_generator
+# Devneya
 
 FIXME: description
 
 ## Installation
 
-git clone https://github.com/Setom29/ChatGPT-Test.git
+```
+$ git clone https://github.com/get-zen-dev/Devneya.git
+```
 
-echo "api-key: YOUR-API-KEY" > config.yml
+#### Config file example:
+
+```
+api-key: OPENAI_API_KEY
+deno-token: DENO_TOKEN
+deno-project: NAME_OF_DENO_PROJECT
+```
 
 ## Usage
 
-$ bb generate *command-line-args*
+```
+$ bb generate [flags] prompt
+```
 
 ## Options
 
--x execute
-
+`-o filename` - Name of the output file
+`-x` - execute in Deno
+ 
 ## Examples
-
-...
-
+```
+bb generate -o code.js -x prompt
+```
 ### Bugs
 
 ...
