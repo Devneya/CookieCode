@@ -30,7 +30,7 @@ $ bb generate [flags] prompt
  
 ## Examples
 ```
-bb generate -o code.js -x prompt
+bb generate -o ./code-path/code.js -x prompt
 ```
 ### Bugs
 
