@@ -8,7 +8,7 @@
    (println (bp/shell (str "deployctl deploy --token=" deno-token " --project=" deno-project " " filename)))
    )
   
-  ;; ([filename] (let [config (utils/load-config "config.yml")]
-  ;;       (println (bp/shell "deployctl deploy --token=" (:deno-token config) " --project" (:deno-project config) filename)))
-  ;;  )
+  ([filename] (let [config (utils/load-config "config.yml")] 
+                (println (bp/shell (str "deployctl deploy --token=" (:deno-token config) " --project=" (:deno-project config) " " filename))))
+   )
   )

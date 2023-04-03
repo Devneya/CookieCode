@@ -29,8 +29,15 @@ $ bb generate [flags] prompt
 `-x` - execute in Deno
  
 ## Examples
+
 ```
 bb generate -o ./code-path/code.js -x prompt
+```
+
+#### If only execution is required:
+
+```
+bb execute ./code-path/code.js
 ```
 ### Bugs
 

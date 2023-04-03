@@ -5,4 +5,6 @@
         babashka/babashka.curl {:mvn/version "0.1.2"}
         org.babashka/http-client {:mvn/version "0.1.8"}}
  :tasks {generate {:requires ([devneya.core :as core])
-               :task (apply core/-main *command-line-args*)}}}
+               :task (apply core/-main *command-line-args*)}
+         execute {:requires ([devneya.exec :as exec])
+                  :task (apply exec/exec-code *command-line-args*)}}}
