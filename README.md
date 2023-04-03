@@ -9,6 +9,7 @@ $ git clone https://github.com/get-zen-dev/Devneya.git
 ```
 
 #### Config file example:
+config.yml
 
 ```
 api-key: OPENAI_API_KEY
