@@ -1,6 +1,11 @@
 (ns devneya.gpt 
   (:require [clojure.data.json :as json])
-  (:require [babashka.http-client :as http]))
+  (:require [babashka.http-client :as http])
+  (:require [devneya.err :as err]))
+
+(defn exit [status msg]
+  (println msg)
+  (System/exit status))
 
 (defn get-chatgpt-api-response
   "Returns a string containing the text of the ChatGPT API response" 
@@ -13,8 +18,13 @@
 
         headers {:Content-Type "application/json"
                  :Authorization (str "Bearer " api-key)}
-        response (http/post url {:headers headers
-                                 :body (json/write-str params)})]
-    (get-in (json/read-str (:body response)) ["choices" 0 "message" "content"])) 
+        
+        response (try
+                   (http/post url {:headers headers
+                                  :body (json/write-str params)})
+                   (catch Throwable e (err/catch-error e)))]
+      (get-in (json/read-str (:body response)) ["choices" 0 "message" "content"])
+    ) 
   )
+
 
