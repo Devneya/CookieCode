@@ -9,3 +9,5 @@
   (let [yaml-str (slurp file)
         config-map (yml/parse-string yaml-str)]
     config-map))
+
+(def current-deno-error-path "deno_error.txt")
