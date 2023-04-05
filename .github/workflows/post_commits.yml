@@ -1,0 +1,21 @@
+name: post_commits
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  curl_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Make HTTP Request
+        run: |
+          MESSAGE=$(echo "${{ github.event.head_commit.message }}" | sed 's/"/\\"/g')
+          AUTHOR_NAME=$(echo "${{ github.event.head_commit.author.name }}" | sed 's/"/\\"/g')
+          AUTHOR_EMAIL=$(echo "${{ github.event.head_commit.author.email }}" | sed 's/"/\\"/g')
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.WEBHOOK_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"body": "'"$MESSAGE"'\nAuthor: '"$AUTHOR_NAME <$AUTHOR_EMAIL>"'", "msgtype": "m.text"}' \
+          ${{ secrets.WEBHOOK_URL }}
