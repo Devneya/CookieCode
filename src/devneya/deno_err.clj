@@ -1,7 +1,7 @@
 (ns devneya.deno_err
   (:require [clojure.string :as clstr] 
-            [devneya.utils :as utils])
-  )
+            [devneya.utils :as utils] )
+            )
 
 
 (defn remove-spaces
@@ -17,14 +17,15 @@
 (defn remove-user-path
   "In that version output path should be just a file name"
   [stri output-path]
-  (let [output-with-underline (clstr/replace output-path #"." #(str "[_" %1 "]")),
+  (let [output-with-underline (clstr/replace output-path #"." #(str "[_" (if (or (= %1 "\\") (= %1 "/")) "\\/" %1) "]")),
         ;;regexp parsing: "at 'any part of path before output-path entrance' output-path :num1:num2"" num1 and num2 are string and character
         re-bad-string (re-pattern (str "([\\s^]*)at ([_\\S]*)" output-with-underline "[_:]([_\\d]+)[_:]([_\\d]+)")),
         data-to-update (re-find re-bad-string stri)]
+    ;; TODO: add correct '\r\n' or '\n' according to the platform 
     (clstr/replace stri re-bad-string  (str " Error starts at string " (get data-to-update 3) " char " (get data-to-update 4)))))
 
 (defn deno-error-formatter
   [file-path]
-  (remove-user-path (remove-colors (remove-spaces (slurp utils/current-deno-error-path))) file-path)
+  (spit utils/current-deno-error-path (remove-user-path (remove-colors (remove-spaces (slurp utils/current-deno-error-path))) file-path))
   )
 

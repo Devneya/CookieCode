@@ -10,7 +10,7 @@
     (try 
       (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" deno-token " --project=" deno-project " " filename)) 
       (catch Throwable e (err/catch-error e)) 
-      ;;(finally (dener/deno-error-formatter filename))
+      (finally (dener/deno-error-formatter filename))
     ) 
   )
   
@@ -18,7 +18,7 @@
     (try 
       (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:deno-token config) " --project=" (:deno-project config) " " filename))
       (catch Throwable e (err/catch-error e))
-      ;;(finally (dener/deno-error-formatter filename))
+      (finally (dener/deno-error-formatter filename))
     )
   ))
 )
