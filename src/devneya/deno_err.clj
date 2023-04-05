@@ -28,7 +28,8 @@
     (clstr/replace stri re-bad-string #(str " Error starts at string " (get %1 index-of-string-number) " char " (get %1 index-of-char-number)))))
 
 (defn deno-error-formatter
-  [file-path]
-  (spit utils/current-deno-error-path (remove-user-path (remove-colors (slurp utils/current-deno-error-path)) file-path))
-  )
+(  [file-path]
+  (spit utils/current-deno-error-path (remove-user-path (remove-colors (slurp utils/current-deno-error-path)) file-path)))
+(  [file-path error-str]
+  (spit utils/current-deno-error-path (remove-user-path (remove-colors error-str) file-path))))
 
