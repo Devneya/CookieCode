@@ -3,7 +3,8 @@
               [clojure.tools.cli :refer [parse-opts]]
               [devneya.exec :as exec]
               [devneya.err :as err]
-              [devneya.prompt :as prompt]))
+              [devneya.prompt :as prompt]
+              [devneya.gpt :as gpt]))
 
 (def cli-options
   [["-o" "--output-filename FILE" "Output file path"
@@ -52,7 +53,7 @@
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
     (if exit-message
       (err/exit (if ok? 0 1) exit-message)
-      ((prompt/make-prompt config prompt (:output-filename options))
+      (do (prompt/make-prompt (:api-key config) prompt (:output-filename options))
        (if (= (:exec options) true)
          (exec/exec-code (:deno-token config) (:deno-project config) (:output-filename options))
          (println "Code saved in file:" (:output-filename options)))))))
