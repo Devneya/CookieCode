@@ -18,7 +18,7 @@
   "Execute file in Deno"
   ([deno-token deno-project filename]
     (try 
-      (bp/shell {:err utils/current-deno-error-path} (str "/Users/igorkiselev/.deno/bin/deployctl deploy --token=" deno-token " --project=" deno-project " " filename)) 
+      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" deno-token " --project=" deno-project " " filename)) 
       (catch Throwable e (handle-error filename e)) 
     ;;  (finally (make-gpt-fix-request filename))
     ) 
@@ -26,7 +26,7 @@
   
   ([filename] (let [config (utils/load-config "config.yml")]
     (try 
-      (bp/shell {:err utils/current-deno-error-path} (str "/Users/igorkiselev/.deno/bin/deployctl deploy --token=" (:deno-token config) " --project=" (:deno-project config) " " filename))
+      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:deno-token config) " --project=" (:deno-project config) " " filename))
       (catch Throwable e (err/show-error e))
       (finally (dener/deno-error-formatter filename))
     )
