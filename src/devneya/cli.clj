@@ -3,8 +3,7 @@
               [clojure.tools.cli :refer [parse-opts]]
               [devneya.exec :as exec]
               [devneya.err :as err]
-              [devneya.prompt :as prompt]
-              [devneya.gpt :as gpt]))
+              [devneya.prompt :as prompt]))
 
 (def cli-options
   [["-o" "--output-filename FILE" "Output file path"
