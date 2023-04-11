@@ -4,7 +4,7 @@
             [devneya.cli :as cli])
   (:gen-class :main true))
 
-(def config (utils/load-config "config.yml"))
+(def config (utils/load-config))
 
-(defn -main [& args]
+(defn -main [& args] 
   (cli/run-cli config args))

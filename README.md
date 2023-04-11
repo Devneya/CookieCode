@@ -8,16 +8,26 @@ FIXME: description
 $ git clone https://github.com/get-zen-dev/Devneya.git
 ```
 
+#### start.sh example: 
+
+```
+#!/bin/sh
+export OPENAI_KEY="OPENAI-KEY"
+export DENO_DEPLOY_TOKEN="DENO-TOKEN"
+export DENO_PROJECT="PROJECT-NAME"
+```
+
 #### Config file example:
 config.yml
 
 ```
-api-key: OPENAI_API_KEY
+api-key: OPENAI_KEY
 deno-token: DENO_TOKEN
-deno-project: NAME_OF_DENO_PROJECT
+deno-project: PROJECT-NAME
 ```
 
 ## Usage
+Create `~/.config/devneya/keys.yml` or use `source ./start.sh`
 
 ```
 $ bb generate [flags] prompt

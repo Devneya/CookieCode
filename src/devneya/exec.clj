@@ -24,9 +24,10 @@
     ) 
   )
   
-  ([filename] (let [config (utils/load-config "config.yml")]
+  ([filename] 
+   (let [config (utils/load-config)]
     (try 
-      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:deno-token config) " --project=" (:deno-project config) " " filename))
+      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " filename))
       (catch Throwable e (err/show-error e))
       (finally (dener/deno-error-formatter filename))
     )

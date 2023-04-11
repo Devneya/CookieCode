@@ -52,7 +52,7 @@
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
     (if exit-message
       (err/exit (if ok? 0 1) exit-message)
-      (do (prompt/make-prompt (:api-key config) prompt (:output-filename options))
+      (do (prompt/make-prompt (:OPENAI_KEY config) prompt (:output-filename options))
        (if (= (:exec options) true)
-         (exec/exec-code (:deno-token config) (:deno-project config) (:output-filename options))
+         (exec/exec-code (:DENO_DEPLOY_TOKEN config) (:DENO_PROJECT config) (:output-filename options))
          (println "Code saved in file:" (:output-filename options)))))))

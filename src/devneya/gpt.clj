@@ -12,9 +12,9 @@
                                  Do not apply any formatting or syntax highlighting.
                                  Do not wrap the code in a code block."}])
 
-(defn build-headers [api-key]
+(defn build-headers [OPENAI_KEY]
   {:Content-Type "application/json"
-   :Authorization (str "Bearer " api-key)})
+   :Authorization (str "Bearer " OPENAI_KEY)})
 
 (defn build-body [role text context]
   (json/write-str {:model OPENAI-MODEL
@@ -26,15 +26,15 @@
 
 (defn get-chatgpt-api-response
   "Returns a string containing the text of the ChatGPT API response"
-  ([text api-key role context]
+  ([text OPENAI_KEY role context]
    (parse-response (try
-                    (http/post OPENAI-API-URL {:headers (build-headers api-key)
+                    (http/post OPENAI-API-URL {:headers (build-headers OPENAI_KEY)
                                                :body    (build-body role text context)})
                     (catch Throwable e (err/catch-error e))))) 
-  ([text api-key role]
-   (get-chatgpt-api-response text api-key role INITIAL-CONTEXT))
-  ([text api-key]
-   (get-chatgpt-api-response text api-key "user" INITIAL-CONTEXT)))
+  ([text OPENAI_KEY role]
+   (get-chatgpt-api-response text OPENAI_KEY role INITIAL-CONTEXT))
+  ([text OPENAI_KEY]
+   (get-chatgpt-api-response text OPENAI_KEY "user" INITIAL-CONTEXT)))
 
 ;; (defn get-chatgpt-api-response
 ;;   "Returns a string containing the text of the ChatGPT API response"
