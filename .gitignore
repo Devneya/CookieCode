@@ -15,3 +15,5 @@ config.yml
 .lsp
 .calva
 /code-path/
+start.sh
+deno_error.txt
