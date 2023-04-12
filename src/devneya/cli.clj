@@ -1,9 +1,9 @@
 (ns devneya.cli
-    (:require [clojure.string :as str]
-              [clojure.tools.cli :refer [parse-opts]]
-              [devneya.exec :as exec]
-              [devneya.err :as err]
-              [devneya.prompt :as prompt]))
+  (:require [clojure.string :as str]
+            [clojure.tools.cli :refer [parse-opts]]
+            [devneya.exec :as exec]
+            [devneya.err :as err]
+            [devneya.prompt :as prompt]))
 
 (def cli-options
   [["-o" "--output-filename FILE" "Output file path"
@@ -52,7 +52,7 @@
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
     (if exit-message
       (err/exit (if ok? 0 1) exit-message)
-      (do (prompt/make-prompt (:OPENAI_KEY config) prompt (:output-filename options))
-       (if (= (:exec options) true)
-         (exec/exec-code (:DENO_DEPLOY_TOKEN config) (:DENO_PROJECT config) (:output-filename options))
-         (println "Code saved in file:" (:output-filename options)))))))
+      (do (prompt/make-initial-prompt (:api-key config) prompt (:output-filename options))
+          (if (= (:exec options) true)
+            (exec/exec-code config (:output-filename options))
+            (println "Code saved in file:" (:output-filename options)))))))

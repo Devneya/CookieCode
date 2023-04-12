@@ -7,29 +7,19 @@
 
 (defn handle-error 
   "Generates gpt fix request"
-  [filename e]
+  [OPENAI-KEY filename e]
   (err/show-error e)
   (dener/deno-error-formatter filename)
   (println "Retrying...")
-  (prompt/make-gpt-fix-request filename)
+  (prompt/make-fix-prompt OPENAI-KEY filename)
   )
 
 (defn exec-code
   "Execute file in Deno"
-  ([deno-token deno-project filename]
-    (try 
-      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" deno-token " --project=" deno-project " " filename)) 
-      (catch Throwable e (handle-error filename e)) 
-    ;;  (finally (make-gpt-fix-request filename))
-    ) 
-  )
-  
-  ([filename] 
-   (let [config (utils/load-config)]
-    (try 
-      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " filename))
-      (catch Throwable e (err/show-error e))
-      (finally (dener/deno-error-formatter filename))
-    )
-  ))
-)
+  ([config filename]
+   (try
+     (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " filename))
+     (catch Throwable e (handle-error (:api-key config) filename e))
+      ;; (finally (make-gpt-fix-request filename))) 
+      ;; (finally (dener/deno-error-formatter filename))
+     )))
