@@ -7,11 +7,11 @@
 
 (defn handle-error 
   "Generates gpt fix request"
-  [OPENAI-KEY filename e]
+  [openai-key filename e]
   (err/show-error e)
   (dener/deno-error-formatter filename)
   (println "Retrying...")
-  (prompt/make-fix-prompt OPENAI-KEY filename)
+  (prompt/make-fix-prompt openai-key filename)
   )
 
 (defn exec-code
