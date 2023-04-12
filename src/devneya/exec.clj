@@ -19,7 +19,7 @@
   ([config filename]
    (try
      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " filename))
-     (catch Throwable e (handle-error (:api-key config) filename e))
+     (catch Throwable e (handle-error (:OPENAI_KEY config) filename e))
       ;; (finally (make-gpt-fix-request filename))) 
       ;; (finally (dener/deno-error-formatter filename))
      )))
