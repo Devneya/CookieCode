@@ -4,7 +4,7 @@
 (defn make-prompt
   "Send prompt to write a code to AI and saves result in *output-filename* file"
   [openai-key prompt output-filename]
-  (let [response (gpt/get-chatgpt-api-response (str prompt " Write only code. Do not use ```.") openai-key)]
+  (let [response (gpt/get-chatgpt-api-response prompt openai-key)]
     (spit output-filename response)))
 
 (defn make-initial-prompt
