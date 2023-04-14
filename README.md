@@ -21,9 +21,9 @@ export DENO_PROJECT="PROJECT-NAME"
 config.yml
 
 ```
-api-key: OPENAI_KEY
-deno-token: DENO_TOKEN
-deno-project: PROJECT-NAME
+OPENAI_KEY: OPENAI_KEY
+DENO_DEPLOY_TOKEN: DENO_TOKEN
+DENO_PROJECT: PROJECT-NAME
 ```
 
 ## Usage
