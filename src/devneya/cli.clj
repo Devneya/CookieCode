@@ -50,11 +50,9 @@
 
 (defn run-cli [config args]
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
-    (if exit-message
-      (err/exit (if ok? 0 1) exit-message)
-      (try
-        ((prompt/make-initial-prompt (:OPENAI_KEY config) prompt (:output-filename options))
-         (if (= (:exec options) true)
-           (exec/exec-code config (:output-filename options))
-           (println "Code saved in file:" (:output-filename options))))
-        (catch Throwable e (err/show-error e))))))
+    (when exit-message
+      (err/exit (if ok? 0 1) exit-message)) 
+    (try
+      (prompt/make-initial-prompt (:OPENAI_KEY config) prompt (:output-filename options))
+      (when (= (:exec options) true) (exec/exec-code config (:output-filename options)))
+      (catch Throwable e (println e)))))
