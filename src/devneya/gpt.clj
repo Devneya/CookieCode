@@ -1,6 +1,7 @@
 (ns devneya.gpt
   (:require [clojure.data.json :as json])
-  (:require [babashka.http-client :as http]))
+  (:require [babashka.http-client :as http])
+  (:require [devneya.utils :as utils]))
 
 (def OPENAI-API-URL "https://api.openai.com/v1/chat/completions")
 (def OPENAI-MODEL "gpt-3.5-turbo")
@@ -28,16 +29,21 @@
    Sends request to ChatGPT and gets the answer. \n
    Returns a string containing the text of the ChatGPT API response.
    Throws"
-  ([text openai-key role context]
-      ;; (prom/!
-       (let [response (http/post OPENAI-API-URL {:headers (build-headers openai-key)
-                                                 :body    (build-body role text context)})]
-         (parse-response response)))
+  ([text openai-key role context log-dir-path]
+       (let [body (build-body role text context)
+             response (http/post OPENAI-API-URL {:headers (build-headers openai-key)
+                                                 :body    body})
+             parsed-response (parse-response response)]
+         (when (not-empty log-dir-path) 
+           ;;(println (str log-dir-path "/" (utils/date-hms)))
+           (spit (str log-dir-path "/" (utils/date-hms) ".txt") 
+                 (str "Request:\n" body "\nResponse:\n" parsed-response )))
+         parsed-response))
   ;;  (parse-response (try
   ;;                    (http/post OPENAI-API-URL {:headers (build-headers openai-key)
   ;;                                               :body    (build-body role text context)})
   ;;                    (catch Throwable e (err/catch-error e)))))
-  ([text openai-key role]
-   (get-chatgpt-api-response text openai-key role INITIAL-CONTEXT))
-  ([text openai-key]
-   (get-chatgpt-api-response text openai-key "user" INITIAL-CONTEXT)))
+  ([text openai-key role log-dir-path]
+   (get-chatgpt-api-response text openai-key role INITIAL-CONTEXT log-dir-path))
+  ([text openai-key log-dir-path]
+   (get-chatgpt-api-response text openai-key "user" INITIAL-CONTEXT log-dir-path)))

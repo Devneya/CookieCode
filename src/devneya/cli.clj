@@ -53,6 +53,6 @@
     (when exit-message
       (err/exit (if ok? 0 1) exit-message)) 
     (try
-      (prompt/make-initial-prompt (:OPENAI_KEY config) prompt (:output-filename options))
+      (prompt/make-initial-prompt (:OPENAI_KEY config) prompt (:output-filename options) (:REQUSET_LOG_PATH config))
       (when (= (:exec options) true) (exec/exec-code config (:output-filename options)))
       (catch Throwable e (println e)))))

@@ -5,6 +5,11 @@
 
 (def current-deno-error-path "deno_error.txt")
 
+(defn date-hms
+  []
+  (-> (java.time.LocalDateTime/now)
+      (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd---kk-mm-ss"))))
+
 
 (defn parse-file
   "Parse config file
@@ -28,5 +33,6 @@
          (parse-file config-file-path)
          (let [config-map {:OPENAI_KEY (System/getenv "OPENAI_KEY")
                            :DENO_DEPLOY_TOKEN (System/getenv "DENO_DEPLOY_TOKEN")
-                           :DENO_PROJECT (System/getenv "DENO_PROJECT")}]
+                           :DENO_PROJECT (System/getenv "DENO_PROJECT")
+                           :REQUSET_LOG_PATH (System/getenv "REQUSET_LOG_PATH")}]
            config-map))))

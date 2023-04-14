@@ -7,11 +7,11 @@
 
 (defn handle-error 
   "Generates gpt fix request"
-  [openai-key filename e]
+  [openai-key filename e log-dir-path]
   (err/show-error e)
   (dener/deno-error-formatter filename)
   (println "Retrying...")
-  (prompt/make-fix-prompt openai-key filename)
+  (prompt/make-fix-prompt openai-key filename log-dir-path)
   )
 
 (defn exec-code
@@ -19,7 +19,7 @@
   ([config filename]
    (try
      (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " filename))
-     (catch Throwable e (handle-error (:OPENAI_KEY config) filename e))
+     (catch Throwable e (handle-error (:OPENAI_KEY config) filename e (:REQUSET_LOG_PATH config)))
       ;; (finally (make-gpt-fix-request filename))) 
       ;; (finally (dener/deno-error-formatter filename))
      )))
