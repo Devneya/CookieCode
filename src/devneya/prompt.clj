@@ -5,7 +5,8 @@
   "Send prompt to write a code to AI and saves result in *output-filename* file"
   [openai-key prompt output-filename]
   (let [response (gpt/get-chatgpt-api-response prompt openai-key)]
-    (spit output-filename response)))
+    (spit output-filename response)
+    (println "The code saved in" output-filename)))
     ;; (if (prom/thrown? response)
     ;;   (response)
     ;;   (spit output-filename response))))
