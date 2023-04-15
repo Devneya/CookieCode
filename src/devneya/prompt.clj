@@ -15,7 +15,7 @@
   [openai-key prompt output-filename log-dir-path] 
   (make-prompt
    openai-key
-   (str prompt " Write only code. Do not use ```.")
+   (str "Write only code. Do not use ```. " prompt)
    output-filename
    log-dir-path))
 
