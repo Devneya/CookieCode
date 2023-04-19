@@ -5,32 +5,26 @@
   (System/exit status))
 
 (defn parse-err 
-  "Parses Throwable exception and returns status and message"
+  "Parse Throwable exception, return error message"
   [e]
-  (let  [data (get-in (Throwable->map e) [:via 0 :data])]
-    {:err-status (:status data) :err-body (:body data)}
-    )
-  )
+  (let  [data (get-in (Throwable->map e) [:via 0])] 
+    (str "Type:     "(:type data) "\nMessage:  " (:message data))))
 
 (defn catch-error
   "Main func for catching errors"
   [e]
-  (let [{:keys [err-status err-body]} (parse-err e)]
-  (exit err-status err-body))
-  )
+  (let [msg (parse-err e)]
+  (exit 1 msg)))
 
 (defn parse-clojure-err 
-  "Parses Throwable exception and returns cmd and type"
+  "Parse Throwable exception and return cmd and type"
   [e]
   (let  [data (get-in (Throwable->map e) [:via 0 :data])]
-    {:err-cmd (:cmd data) :err-type (:type data)}
-    )
-  )
+    {:err-cmd (:cmd data) :err-type (:type data)}))
 
 (defn show-error
-  "Function to show error"
+  "Show error"
   [e]
   (let [{:keys [err-cmd err-type]} (parse-clojure-err e)]
   (println err-type)
-  (println err-cmd))
-  )
+  (println err-cmd)))

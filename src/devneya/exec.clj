@@ -1,25 +1,9 @@
 (ns devneya.exec
-  (:require [devneya.utils :as utils]
-            [devneya.deno_err :as dener]
-            [babashka.process :as bp]
-            [devneya.err :as err]
-            [devneya.prompt :as prompt]))
-
-(defn handle-error 
-  "Generates gpt fix request"
-  [openai-key filename e log-dir-path]
-  (err/show-error e)
-  (dener/deno-error-formatter filename)
-  (println "Retrying...")
-  (prompt/make-fix-prompt openai-key filename log-dir-path)
-  )
+  (:require [babashka.process :as bp]))
 
 (defn exec-code
   "Execute file in Deno"
-  ([config filename]
+  ([config]
    (try
-     (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " filename))
-     (catch Throwable e (handle-error (:OPENAI_KEY config) filename e (:REQUSET_LOG_PATH config)))
-      ;; (finally (make-gpt-fix-request filename))) 
-      ;; (finally (dener/deno-error-formatter filename))
-     )))
+     (bp/shell {:DENO_ERROR_FILENAME config} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " (:CODE_FILENAME config)))
+     (catch Throwable e (spit (:DENO_ERROR_FILENAME config) e)))))
