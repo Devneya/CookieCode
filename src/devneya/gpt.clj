@@ -44,10 +44,11 @@
    Returns a string containing the text of the ChatGPT API response.
    Throws http/post exceptions, if occurs."
   ([config text role context] 
+
    (let [body (build-body role text context) 
          response (parse-response (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
-                                             :body    body}))]
-     (when (not-empty (:REQUEST_LOG_PATH config))
+                                                             :body    body}))]
+     (when (not= (:REQUEST_LOG_PATH config) "")
        (save-request context role text response (:REQUEST_LOG_PATH config)))
      response))
   ([config text role]

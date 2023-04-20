@@ -48,8 +48,9 @@
          ["-h" "--help"]]
         {:keys [prompt options exit-message ok?]} (validate-args args cli-options)] 
     (when exit-message (err/exit (if ok? 0 1) exit-message)) 
-    (try
-      (when (not= (:filename options) (:CODE_FILENAME config)) (update config :CODE_FILENAME (:filename options))) 
+    (try 
+      (when (not= (:filename options) nil) (update config :CODE_FILENAME (:filename options))) 
       (prompt/make-initial-prompt config prompt)
+
       (when (= (:exec options) true) (exec/exec-code config))
       (catch Throwable e (err/catch-error e)))))
