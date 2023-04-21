@@ -7,7 +7,6 @@
   (-> (java.time.LocalDateTime/now)
       (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd---kk-mm-ss"))))
 
-
 (defn parse-file
   "Parse config file
    Return config map"

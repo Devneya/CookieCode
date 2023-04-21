@@ -25,8 +25,13 @@
 
 (defn validate-args
   "Validate command line arguments."
-  [args cli-options]
-  (let [{:keys [options arguments summary errors]} (parse-opts args cli-options)
+  [args config]
+  (let [cli-options
+        [["-o" "--output-filename FILE" "Output file path" :default (:CODE_FILENAME config)]
+         ["-g" "--[no-]gen" "Generate the code" :default true]
+         ["-x" "--[no-]exec" "Execute the code" :default false]
+         ["-h" "--help"]]
+        {:keys [options arguments summary errors]} (parse-opts args cli-options)
         prompt (str/join " " arguments)]
 
     (cond
@@ -42,15 +47,15 @@
       {:exit-message (usage summary)})))
 
 (defn run-cli [config args]
-  (let [cli-options
-        [["-o" "--output-filename FILE" "Output file path" :default (:CODE_FILENAME config)]
-         ["-x" "--[no-]exec" "Execute the code" :default false]
-         ["-h" "--help"]]
-        {:keys [prompt options exit-message ok?]} (validate-args args cli-options)] 
-    (when exit-message (err/exit (if ok? 0 1) exit-message)) 
-    (try 
-      (when (not= (:filename options) nil) (update config :CODE_FILENAME (:filename options))) 
-      (prompt/make-initial-prompt config prompt)
-
+  (let [{:keys [prompt options exit-message ok?]} (validate-args args config)]
+    (when exit-message (err/exit (if ok? 0 1) exit-message))
+    (when (not= (:filename options) nil) (update config :CODE_FILENAME (:filename options)))
+    
+    (try
+      (when (= (:gen options) true) (prompt/make-initial-prompt config prompt))
+      
       (when (= (:exec options) true) (exec/exec-code config))
+      
       (catch Throwable e (err/catch-error e)))))
+
+  
