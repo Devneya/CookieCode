@@ -5,8 +5,7 @@
   "Send prompt to write a code to AI and saves result in *output-filename* file"
   [config prompt]
   (let [response (gpt/get-chatgpt-api-response config prompt)]
-    (spit (:CODE_FILENAME config) response)
-    (println "The code saved in" (:CODE_FILENAME config))))
+    (spit (:CODE_FILENAME config) response)))
 
 (defn make-initial-prompt
   [config prompt] 

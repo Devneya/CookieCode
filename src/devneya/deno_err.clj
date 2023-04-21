@@ -1,7 +1,5 @@
 (ns devneya.deno_err
-  (:require [clojure.string :as clstr] 
-            [devneya.utils :as utils] )
-            )
+  (:require [clojure.string :as clstr]))
 
 
 ;; (defn remove-spaces
@@ -28,8 +26,8 @@
     (clstr/replace stri re-bad-string #(str " Error starts at string " (get %1 index-of-string-number) " char " (get %1 index-of-char-number)))))
 
 (defn deno-error-formatter
-(  [file-path]
-  (spit utils/current-deno-error-path (remove-user-path (remove-colors (slurp utils/current-deno-error-path)) file-path)))
-(  [file-path error-str]
-  (spit utils/current-deno-error-path (remove-user-path (remove-colors error-str) file-path))))
+  ([config]
+   (spit (:DENO_ERROR_FILENAME config) (remove-user-path (remove-colors (slurp (:DENO_ERROR_FILENAME config))) (:CODE_FILENAME config))))
+  ([config error-str]
+   (spit (:DENO_ERROR_FILENAME config) (remove-user-path (remove-colors error-str) (:CODE_FILENAME config)))))
 
