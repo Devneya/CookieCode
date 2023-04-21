@@ -48,7 +48,6 @@ $ bb devneya [flags] prompt
 ```
 bb devneya prompt
 bb devneya -a prompt 
-bb devneya -o 
 ```
 
 ## License
