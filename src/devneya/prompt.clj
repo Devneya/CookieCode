@@ -1,11 +1,12 @@
 (ns devneya.prompt
-  (:require [devneya.gpt :as gpt]))
+  (:require [devneya.gpt :as gpt]
+            [devneya.utils :as utils]))
 
 (defn make-prompt 
   "Send prompt to write a code to AI and saves result in *output-filename* file"
   [config prompt]
   (let [response (gpt/get-chatgpt-api-response config prompt)]
-    (spit (:CODE_FILENAME config) response)))
+    (spit (:CODE_FILENAME config) (utils/remove-triple-back-quote response))))
 
 (defn make-initial-prompt
   [config prompt] 

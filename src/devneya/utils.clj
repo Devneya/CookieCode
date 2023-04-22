@@ -1,11 +1,16 @@
 (ns devneya.utils
-  (:require [clj-yaml.core :as yml] 
-            [clojure.java.io :as io]))
+  (:require [clj-yaml.core :as yml]
+            [clojure.java.io :as io]
+            [clojure.string :as clstr]))
 
 (defn date-hms
   []
   (-> (java.time.LocalDateTime/now)
       (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd---kk-mm-ss"))))
+
+(defn remove-triple-back-quote
+  [stri]
+  (clstr/replace stri #"```js|```ts|```|```javascript|```typescript"  ""))
 
 (defn parse-file
   "Parse config file
