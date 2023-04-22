@@ -1,7 +1,7 @@
 (ns devneya.utils
   (:require [clj-yaml.core :as yml] 
             [clojure.java.io :as io]
-            [devneya.err :as err]))
+            [clojure.string :as clstr]))
 
 (def current-deno-error-path "deno_error.txt")
 
@@ -10,6 +10,9 @@
   (-> (java.time.LocalDateTime/now)
       (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd---kk-mm-ss"))))
 
+(defn remove-triple-back-quote
+  [stri]
+  (clstr/replace stri #"```js|```ts|```|```javascript|```typescript"  ""))
 
 (defn parse-file
   "Parse config file

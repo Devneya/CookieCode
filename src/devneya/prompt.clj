@@ -1,11 +1,12 @@
 (ns devneya.prompt
-  (:require [devneya.gpt :as gpt]))
+  (:require [devneya.gpt :as gpt] 
+            [devneya.utils :as utils]))
 
 (defn make-prompt 
   "Send prompt to write a code to AI and saves result in *output-filename* file"
   [openai-key prompt output-filename log-dir-path]
   (let [response (gpt/get-chatgpt-api-response prompt openai-key log-dir-path)]
-    (spit output-filename response)
+    (spit output-filename (utils/remove-triple-back-quote response))
     (println "The code saved in" output-filename)))
     ;; (if (prom/thrown? response)
     ;;   (response)
