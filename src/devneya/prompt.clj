@@ -1,6 +1,5 @@
 (ns devneya.prompt
-  (:require [devneya.gpt :as gpt]
-            [devneya.utils :as utils]))
+  (:require [devneya.gpt :as gpt]))
 
 (defn make-prompt 
   "Send prompt to write a code to AI and saves result in *output-filename* file"
