@@ -56,7 +56,7 @@
           (prompt/make-initial-prompt config prompt)
           (prompt/make-fix-prompt config))
         (exec/exec-code config)
-        (if (and (not= (slurp (:DENO_ERROR_FILENAME config)) "") (< i (:MAX_REPS config)))
+        (if (and (not-empty(slurp (:DENO_ERROR_FILENAME config))) (< i (:MAX_REPS config)))
           (recur (inc i))
           (println "Code generated successfully.\nPath:" (:CODE_FILENAME config))))
         (catch Throwable e (err/catch-error e)))

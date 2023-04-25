@@ -20,7 +20,6 @@
 (defn exec-code
   "Execute file in Deno"
   ([config] 
-   (when (.exists (io/file (:DENO_ERROR_FILENAME config))) (io/delete-file (:DENO_ERROR_FILENAME config))) 
    (try 
      (bp/shell {:err (:DENO_ERROR_FILENAME config)}
                (str (get-deployctl-command) " deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " (:CODE_FILENAME config)))

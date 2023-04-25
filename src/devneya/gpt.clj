@@ -48,7 +48,7 @@
    (let [body (build-body role text context) 
          response (parse-response (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
                                                              :body    body}))]
-     (when (not= (:REQUEST_LOG_PATH config) "")
+     (when (not-empty (:REQUEST_LOG_PATH config))
        (save-request context role text response (:REQUEST_LOG_PATH config)))
      response))
   ([config text role]
