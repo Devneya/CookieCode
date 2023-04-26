@@ -1,25 +1,26 @@
 (ns devneya.exec
-  (:require [devneya.utils :as utils]
-            [devneya.deno_err :as dener]
-            [babashka.process :as bp]
-            [devneya.err :as err]
-            [devneya.prompt :as prompt]))
+  (:require [babashka.process :as bp]
+            [clojure.java.io :as io] 
+            [devneya.deno_err :as dener]))
 
-(defn handle-error 
+(defn get-deployctl-command
+  "Define the kind of command deployctl.\n
+   Return string."
+  []
+  (if (.exists (io/file (str (System/getProperty "user.home") "/snap/deno/105/.deno/bin/deployctl")))
+    (str (System/getProperty "user.home") "/snap/deno/105/.deno/bin/deployctl")
+    "deployctl"))
+
+(defn handle-error
   "Generates gpt fix request"
-  [openai-key filename e log-dir-path]
-  (err/show-error e)
-  (dener/deno-error-formatter filename)
-  (println "Retrying...")
-  (prompt/make-fix-prompt openai-key filename log-dir-path)
-  )
+  [config]
+  (dener/deno-error-formatter config)
+)
 
 (defn exec-code
   "Execute file in Deno"
-  ([config filename]
-   (try
-     (bp/shell {:err utils/current-deno-error-path} (str "deployctl deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " filename))
-     (catch Throwable e (handle-error (:OPENAI_KEY config) filename e (:REQUSET_LOG_PATH config)))
-      ;; (finally (make-gpt-fix-request filename))) 
-      ;; (finally (dener/deno-error-formatter filename))
-     )))
+  ([config] 
+   (try 
+     (bp/shell {:err (:DENO_ERROR_FILENAME config)}
+               (str (get-deployctl-command) " deploy --token=" (:DENO_DEPLOY_TOKEN config) " --project=" (:DENO_PROJECT config) " " (:CODE_FILENAME config)))
+     (catch Throwable _ (handle-error config)))))

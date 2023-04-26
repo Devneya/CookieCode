@@ -5,13 +5,6 @@
             [devneya.err :as err]
             [devneya.prompt :as prompt]))
 
-(def cli-options
-  [["-o" "--output-filename FILE" "Output file path"
-    :default "./code-path/code.js"]
-   ["-x" "--[no-]exec" "Execute the code"
-    :default false]
-   ["-h" "--help"]])
-
 (defn usage
   "Composes the summary string"
   [options-summary]
@@ -33,7 +26,12 @@
 (defn validate-args
   "Validate command line arguments."
   [args]
-  (let [{:keys [options arguments summary errors]} (parse-opts args cli-options)
+  (let [cli-options
+        [["-g" "--[no-]gen" "Generate the code" :default true]
+         ["-x" "--[no-]exec" "Execute the code" :default false]
+         ["-a" "--all" "Repeat code generation and execution" :default false]
+         ["-h" "--help"]]
+        {:keys [options arguments summary errors]} (parse-opts args cli-options)
         prompt (str/join " " arguments)]
 
     (cond
@@ -50,9 +48,10 @@
 
 (defn run-cli [config args]
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
-    (when exit-message
-      (err/exit (if ok? 0 1) exit-message)) 
-    (try
-      (prompt/make-initial-prompt (:OPENAI_KEY config) prompt (:output-filename options) (:REQUSET_LOG_PATH config))
-      (when (= (:exec options) true) (exec/exec-code config (:output-filename options)))
-      (catch Throwable e (println e)))))
+    (when exit-message (err/exit (if ok? 0 1) exit-message))
+    (if (= (:all options) true)
+      (prompt/make-prompt-chain config prompt)
+      (try
+        (when (= (:gen options) true) (prompt/make-initial-prompt config prompt))
+        (when (= (:exec options) true) (exec/exec-code config))
+        (catch Throwable e (err/catch-error e))))))

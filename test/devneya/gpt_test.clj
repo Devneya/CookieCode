@@ -5,5 +5,4 @@
 
 (deftest get-chatgpt-api-response-test
   (testing "Correct querry to openai api shouldn't lead to exception."
-    (gpt/get-chatgpt-api-response "write hello world" (:OPENAI_KEY core/config) ""))
-  )
+    (gpt/get-chatgpt-api-response core/config "write hello world")))

@@ -8,6 +8,18 @@ FIXME: description
 $ git clone https://github.com/get-zen-dev/Devneya.git
 ```
 
+#### Config file example:
+```~/.config/devneya/keys.yml```
+```
+OPENAI_KEY: OPENAI_KEY
+DENO_DEPLOY_TOKEN: DENO_TOKEN
+DENO_PROJECT: PROJECT_NAME
+REQUEST_LOG_PATH: "LOG_PATH"
+MAX_REPS: 3
+CODE_FILENAME: CODE.js ("./code-path/code.js" by default)
+DENO_ERROR_FILENAME: ERROR_FILENAME ("deno_error.txt" by default)
+```
+
 #### start.sh example: 
 
 ```
@@ -15,47 +27,30 @@ $ git clone https://github.com/get-zen-dev/Devneya.git
 export OPENAI_KEY="OPENAI-KEY"
 export DENO_DEPLOY_TOKEN="DENO-TOKEN"
 export DENO_PROJECT="PROJECT-NAME"
-```
-
-#### Config file example:
-config.yml
-
-```
-OPENAI_KEY: OPENAI_KEY
-DENO_DEPLOY_TOKEN: DENO_TOKEN
-DENO_PROJECT: PROJECT-NAME
+export REQUEST_LOG_PATH=""
+export MAX_REPS=3
 ```
 
 ## Usage
-Create `~/.config/devneya/keys.yml` or use `source ./start.sh`
+Create config file or use `source ./start.sh`
 
 ```
-$ bb generate [flags] prompt
+$ bb devneya [flags] prompt
 ```
 
 ## Options
+```
+"-g" "--[no-]gen" "Generate the code" :default true
+"-x" "--[no-]exec" "Execute the code" :default false
+"-a" "--all" "Repeat code generation and execution" :default false
+"-h" "--help"
+```
 
-`-o filename` - Name of the output file
-`-x` - execute in Deno
- 
 ## Examples
-
 ```
-bb generate -o ./code-path/code.js -x prompt
+bb devneya prompt
+bb devneya -a prompt 
 ```
-
-#### If only execution is required:
-
-```
-bb execute ./code-path/code.js
-```
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
 
 ## License
 

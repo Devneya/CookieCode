@@ -4,10 +4,9 @@
         clj-http/clj-http {:mvn/version "3.12.3"}
         babashka/babashka.curl {:mvn/version "0.1.2"}
         org.babashka/http-client {:mvn/version "0.1.8"}}
- :tasks {generate {:requires ([devneya.core :as core])
+ :tasks {devneya {:requires ([devneya.core :as core])
                :task (apply core/-main *command-line-args*)}
-         execute {:requires ([devneya.exec :as exec])
-                  :task (apply exec/exec-code *command-line-args*)}
+
          test:bb {:extra-paths ["test"]
                   :extra-deps {io.github.cognitect-labs/test-runner
                                {:git/tag "v0.5.1" :git/sha "dfb30dd"}}

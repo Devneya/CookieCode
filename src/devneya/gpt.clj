@@ -10,7 +10,7 @@
                        :content (str "You are a system that only generates code in Java Script.\n"
                                      "Do not describe or contextualize the code.\n" 
                                      "Do not apply any formatting or syntax highlighting.\n"
-                                     "Do not wrap the code in a code block." )}])
+                                     "Do not wrap the code in a code block.")}])
 
 (defn build-headers [openai-key]
   {:Content-Type "application/json"
@@ -37,23 +37,21 @@
                            "content:\n" (:content message) "\n")
             :append true))
     (spit file-path (str "Response:\n" parsed-response) :append true)))
-  ;; (spit (str log-dir-path "/" (utils/date-hms) ".txt")
-  ;;       (str "Request:\n" body "\nResponse:\n" parsed-response)))
 
 (defn get-chatgpt-api-response
   "Gets api key, text of the message, role for the message and the previous context. \n
    Sends request to ChatGPT and gets the answer. \n
    Returns a string containing the text of the ChatGPT API response.
    Throws http/post exceptions, if occurs."
-  ([text openai-key role context log-dir-path]
-       (let [body (build-body role text context)
-             response (http/post OPENAI-API-URL {:headers (build-headers openai-key)
-                                                 :body    body})
-             parsed-response (parse-response response)]
-         (when (not-empty log-dir-path) 
-           (save-request context role text parsed-response log-dir-path))
-         parsed-response))
-  ([text openai-key role log-dir-path]
-   (get-chatgpt-api-response text openai-key role INITIAL-CONTEXT log-dir-path))
-  ([text openai-key log-dir-path]
-   (get-chatgpt-api-response text openai-key "user" INITIAL-CONTEXT log-dir-path)))
+  ([config text role context] 
+
+   (let [body (build-body role text context) 
+         response (parse-response (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
+                                                             :body    body}))]
+     (when (not-empty (:REQUEST_LOG_PATH config))
+       (save-request context role text response (:REQUEST_LOG_PATH config)))
+     response))
+  ([config text role]
+   (get-chatgpt-api-response config text role INITIAL-CONTEXT))
+  ([config text]
+   (get-chatgpt-api-response config text "user" INITIAL-CONTEXT)))
