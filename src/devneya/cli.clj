@@ -50,19 +50,8 @@
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
     (when exit-message (err/exit (if ok? 0 1) exit-message))
     (if (= (:all options) true)
-      (try
-      (loop [i 0]
-        (if (= i 0)
-          (prompt/make-initial-prompt config prompt)
-          (prompt/make-fix-prompt config))
-        (exec/exec-code config)
-        (if (and (not-empty(slurp (:DENO_ERROR_FILENAME config))) (< i (:MAX_REPS config)))
-          (recur (inc i))
-          (println "Code generated successfully.\nPath:" (:CODE_FILENAME config))))
-        (catch Throwable e (err/catch-error e)))
+      (prompt/make-prompt-chain config prompt)
       (try
         (when (= (:gen options) true) (prompt/make-initial-prompt config prompt))
         (when (= (:exec options) true) (exec/exec-code config))
         (catch Throwable e (err/catch-error e))))))
-
-  
