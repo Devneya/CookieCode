@@ -18,8 +18,8 @@
   [file]
 
   (let [config-map (merge 
-                    (yml/parse-string (slurp file)) 
-                    {:DENO_ERROR_FILENAME "deno_error.txt" :CODE_FILENAME "./code-path/code.js"})]
+                    {:DENO_ERROR_FILENAME "deno_error.txt" :CODE_FILENAME "./code-path/code.js"}
+                    (yml/parse-string (slurp file)))]
     config-map))
 
 (defn load-config

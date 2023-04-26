@@ -16,6 +16,8 @@ DENO_DEPLOY_TOKEN: DENO_TOKEN
 DENO_PROJECT: PROJECT_NAME
 REQUEST_LOG_PATH: "LOG_PATH"
 MAX_REPS: 3
+CODE_FILENAME: CODE.js ("./code-path/code.js" by default)
+DENO_ERROR_FILENAME: ERROR_FILENAME ("deno_error.txt" by default)
 ```
 
 #### start.sh example: 
