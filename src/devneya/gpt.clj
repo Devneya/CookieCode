@@ -31,13 +31,13 @@
   [date context role text parsed-response log-dir-path]
   (let [file-path (str log-dir-path "/" date ".txt")]
     (spit file-path (str "Model: " OPENAI-MODEL "\n"
-                         "Temperature: " TEMPERATURE "\n"))
+                         "Temperature: " TEMPERATURE "\n") :append true)
     (doseq [message (conj context {:role role :content text})]
       (spit file-path (str "---------------------\n"
                            "role: "     (:role message) "\n"
                            "content:\n" (:content message) "\n")
             :append true))
-    (spit file-path (str "Response:\n" parsed-response) :append true)))
+    (spit file-path (str "Response:\n" parsed-response "\n\n\n/////////////////////////////////////////") :append true)))
 
 (defn get-chatgpt-api-response
   "Gets api key, text of the message, role for the message and the previous context. \n
