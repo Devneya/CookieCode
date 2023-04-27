@@ -28,8 +28,8 @@
 (defn save-request
   "Gets body of request to AI, received response and logging directory path.
    Writes it into a new file in the given path."
-  [context role text parsed-response log-dir-path]
-  (let [file-path (str log-dir-path "/" (utils/date-hms) ".txt")]
+  [date context role text parsed-response log-dir-path]
+  (let [file-path (str log-dir-path "/" date ".txt")]
     (spit file-path (str "Model: " OPENAI-MODEL "\n"
                          "Temperature: " TEMPERATURE "\n"))
     (doseq [message (conj context {:role role :content text})]
@@ -43,7 +43,7 @@
   "Gets api key, text of the message, role for the message and the previous context. \n
    Sends request to ChatGPT and gets the answer. \n
    Returns a string containing the text of the ChatGPT API response or wrapped exception from http/post, if occurs."
-  ([config text role context]
+  ([config date text role context]
    (let [body (build-body role text context)]
      ;;if post led to exception, wrap and return it
      ;;otherwise save request in log and return response
@@ -52,9 +52,9 @@
                          (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
                                                     :body    body})))]
       (when (not-empty (:REQUEST_LOG_PATH config))
-        (save-request context role text response (:REQUEST_LOG_PATH config)))
+        (save-request date context role text response (:REQUEST_LOG_PATH config)))
       response)))
-  ([config text role]
-   (get-chatgpt-api-response config text role INITIAL-CONTEXT))
-  ([config text]
-   (get-chatgpt-api-response config text "user" INITIAL-CONTEXT)))
+  ([config date text role]
+   (get-chatgpt-api-response config date text role INITIAL-CONTEXT))
+  ([config date text]
+   (get-chatgpt-api-response config date text "user" INITIAL-CONTEXT)))

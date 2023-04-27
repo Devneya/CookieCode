@@ -4,6 +4,7 @@
             [devneya.exec :as exec]
             [devneya.err :as err]
             [devneya.prompt :as prompt]
+            [devneya.utils :as utils]
             [failjure.core :as f]))
 
 (defn usage
@@ -51,10 +52,11 @@
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
     (when exit-message (err/exit (if ok? 0 1) exit-message))
     (if (= (:all options) true)
+      (let [date (utils/date-hms)]
       ;;perform prompt chain and if it wasn't successfull, then plrint error in console
       ;;otherwise print successfull message
       (f/if-let-failed? 
-       [fail (prompt/make-prompt-chain config prompt)]
+       [fail (prompt/make-prompt-chain config date prompt)]
        (print (f/message fail))
        (print "Code generated successfully."))
       ;;perform one prompt and execute, if required
@@ -62,8 +64,8 @@
       ;;otherwise print successfull message
       (f/attempt-all
        [_ (when (= (:gen options) true)
-          (prompt/make-initial-prompt config prompt))
+          (prompt/make-initial-prompt config date prompt))
         _ (when (= (:exec options) true)
           (exec/exec-code config))]
        (print "Code generated.")
-       (f/when-failed [fail] (print (f/message fail)))))))
+       (f/when-failed [fail] (print (f/message fail))))))))
