@@ -27,7 +27,7 @@
 
 (defn deno-error-formatter
   ([config]
-   (spit (:DENO_ERROR_FILENAME config) (remove-user-path (remove-colors (slurp (:DENO_ERROR_FILENAME config))) (:CODE_FILENAME config))))
+   (remove-user-path (remove-colors (slurp (:DENO_ERROR_FILENAME config))) (:CODE_FILENAME config)))
   ([config error-str]
-   (spit (:DENO_ERROR_FILENAME config) (remove-user-path (remove-colors error-str) (:CODE_FILENAME config)))))
+   (remove-user-path (remove-colors error-str) (:CODE_FILENAME config))))
 

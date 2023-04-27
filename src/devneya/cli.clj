@@ -3,7 +3,8 @@
             [clojure.tools.cli :refer [parse-opts]]
             [devneya.exec :as exec]
             [devneya.err :as err]
-            [devneya.prompt :as prompt]))
+            [devneya.prompt :as prompt]
+            [failjure.core :as f]))
 
 (defn usage
   "Composes the summary string"
@@ -50,8 +51,19 @@
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)]
     (when exit-message (err/exit (if ok? 0 1) exit-message))
     (if (= (:all options) true)
-      (prompt/make-prompt-chain config prompt)
-      (try
-        (when (= (:gen options) true) (prompt/make-initial-prompt config prompt))
-        (when (= (:exec options) true) (exec/exec-code config))
-        (catch Throwable e (err/catch-error e))))))
+      ;;perform prompt chain and if it wasn't successfull, then plrint error in console
+      ;;otherwise print successfull message
+      (f/if-let-failed? 
+       [fail (prompt/make-prompt-chain config prompt)]
+       (print (f/message fail))
+       (print "Code generated successfully."))
+      ;;perform one prompt and execute, if required
+      ;;if error occured anywhere print it in console
+      ;;otherwise print successfull message
+      (f/attempt-all
+       [_ (when (= (:gen options) true)
+          (prompt/make-initial-prompt config prompt))
+        _ (when (= (:exec options) true)
+          (exec/exec-code config))]
+       (print "Code generated.")
+       (f/when-failed [fail] (print (f/message fail)))))))
