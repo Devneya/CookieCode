@@ -8,7 +8,7 @@
 (def OPENAI-MODEL "gpt-3.5-turbo")
 (def TEMPERATURE 0.3)
 (def INITIAL-CONTEXT [{:role    "system"
-                       :content (str "You are a system that only generates code in Java Script.\n"
+                       :content (str "You are a system that only generates code in JavaScript for Deno Deploy.\n"
                                      "Do not describe or contextualize the code.\n" 
                                      "Do not apply any formatting or syntax highlighting.\n"
                                      "Do not wrap the code in a code block.")}])
