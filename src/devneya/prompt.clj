@@ -42,7 +42,7 @@
         (f/if-let-ok? ;;get fix prompt result and, if it isn't exception, then continue recursion, otherwise return it
          [_ (err/extend-fix-prompt-fail (make-fix-prompt config date (denerr/deno-error-formatter config exec-error)) attempt)]
          (make-fix-prompt-chain config date (inc attempt)))
-        (f/fail "Couldn't generate working code on request::\n"))))) ;;return fail if there is no more reps available, but code is not working
+        (f/fail "Couldn't generate working code for the given request.\n"))))) ;;return fail if there is no more reps available, but code is not working
   ([config date]
    (make-fix-prompt-chain config date 1)))
 
