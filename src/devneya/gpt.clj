@@ -37,7 +37,7 @@
                            "role: "     (:role message) "\n"
                            "content:\n" (:content message) "\n")
             :append true))
-    (spit file-path (str "Response:\n" parsed-response "\n\n\n/////////////////////////////////////////") :append true)))
+    (spit file-path (str "Response:\n" parsed-response "\n\n\n/////////////////////////////////////////\n") :append true)))
 
 (defn get-chatgpt-api-response
   "Gets api key, text of the message, role for the message and the previous context. \n
