@@ -10,6 +10,8 @@
 
 (defn index-of [e coll] (first (keep-indexed #(if (= e %2) %1) coll)))
 
+(def endl (System/getProperty "line.separator"))
+
 (defn parse-file
   "Parse config file
    Return config map"
