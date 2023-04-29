@@ -19,16 +19,13 @@
   ;;try to execute deployctl, if deployment successful return nothing
   ;;otherwise check if compile error file is not empty, then return error as string
   ;;if not, returns wrapped api exception
-  (f/attempt 
-   (fn [deno-error] 
-     (let [exec-error (slurp (:DENO_ERROR_FILENAME config))]
+   (let [deno-result (bp/shell {:continue true :err (:DENO_ERROR_FILENAME config)}
+                               (str (get-deployctl-command)
+                                    " deploy --token=" (:DENO_DEPLOY_TOKEN config)
+                                    " --project=" (:DENO_PROJECT config)
+                                    " " (:CODE_FILENAME config)))
+         exec-error (slurp (:DENO_ERROR_FILENAME config))]
+     (when (not= (:exit deno-result) 0)
        (if (not-empty exec-error)
          exec-error
-         deno-error)))
-   (f/try*
-    (bp/shell {:err (:DENO_ERROR_FILENAME config)}
-              (str (get-deployctl-command)
-                   " deploy --token=" (:DENO_DEPLOY_TOKEN config)
-                   " --project=" (:DENO_PROJECT config)
-                   " " (:CODE_FILENAME config)))))
-)
+         deno-result))))
