@@ -1,6 +1,6 @@
 (ns devneya.prompt
   (:require [devneya.gpt :as gpt]
-            [devneya.utils :as utils]
+            [devneya.code_formatter :as formatter]
             [devneya.exec :as exec]
             [devneya.err :as err]
             [failjure.core :as f]
@@ -13,7 +13,7 @@
   [config date prompt]
   (f/if-let-ok? ;if gpt/get-chatgpt-api-response doesn't return error, then save respone in file, otherwise return error.
    [response (gpt/get-chatgpt-api-response config date prompt)]
-   (spit (:CODE_FILENAME config) (utils/remove-triple-back-quote response))))
+   (spit (:CODE_FILENAME config) (formatter/remove-triple-back-quote response 0))))
 
 (defn make-initial-prompt
   [config date prompt] 
