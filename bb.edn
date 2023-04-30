@@ -3,7 +3,8 @@
         org.clojure/tools.cli {:mvn/version "1.0.214"}
         clj-http/clj-http {:mvn/version "3.12.3"}
         babashka/babashka.curl {:mvn/version "0.1.2"}
-        org.babashka/http-client {:mvn/version "0.1.8"}}
+        org.babashka/http-client {:mvn/version "0.1.8"}
+        failjure/failjure {:mvn/version "2.2.0"}}
  :tasks {devneya {:requires ([devneya.core :as core])
                :task (apply core/-main *command-line-args*)}
 

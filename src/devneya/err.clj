@@ -1,30 +1,33 @@
-(ns devneya.err)
+(ns devneya.err
+  (:require [failjure.core :as f]))
 
 (defn exit [status msg] 
   (println msg)
   (System/exit status))
 
-(defn parse-err 
+(defn parse-exception
   "Parse Throwable exception, return error message"
   [e]
   (let  [data (get-in (Throwable->map e) [:via 0])] 
     (str "Type:     "(:type data) "\nMessage:  " (:message data))))
 
-(defn catch-error
-  "Main func for catching errors"
-  [e]
-  (let [msg (parse-err e)]
-  (exit 1 msg)))
+(defn extend-initial-prompt-fail
+  "Extend initial prompt fail with additional info."
+  [initial-result]
+  (if (f/failed? initial-result)
+    (f/fail (str "Error occured on initial prompt:\n"  initial-result))
+    initial-result))
 
-(defn parse-clojure-err 
-  "Parse Throwable exception and return cmd and type"
-  [e]
-  (let  [data (get-in (Throwable->map e) [:via 0 :data])]
-    {:err-cmd (:cmd data) :err-type (:type data)}))
+(defn extend-fix-prompt-fail
+  "Extend fix prompt fail message with attempt number."
+  [fix-result attempt]
+  (if (f/failed? fix-result)
+    (f/fail (str "Error occured on " attempt "-th fix prompt:\n"  fix-result))
+    fix-result))
 
-(defn show-error
-  "Show error"
-  [e]
-  (let [{:keys [err-cmd err-type]} (parse-clojure-err e)]
-  (println err-type)
-  (println err-cmd)))
+(defn extend-execution-fail
+  "Extend execution fail message with additional info."
+  [exec-result]
+  (if (f/failed? exec-result)
+    (f/fail (str "Error occured on generated code execution:\n"  exec-result))
+    exec-result))

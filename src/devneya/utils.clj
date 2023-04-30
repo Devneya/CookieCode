@@ -8,9 +8,9 @@
   (-> (java.time.LocalDateTime/now)
       (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd---kk-mm-ss"))))
 
-(defn remove-triple-back-quote
-  [stri]
-  (clstr/replace stri #"```js|```ts|```|```javascript|```typescript"  ""))
+(defn index-of [e coll] (first (keep-indexed #(if (= e %2) %1) coll)))
+
+(def endl (System/getProperty "line.separator"))
 
 (defn parse-file
   "Parse config file
