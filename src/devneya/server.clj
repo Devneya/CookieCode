@@ -8,13 +8,7 @@
 (def config (utils/load-config))
 
 (def greeting-form
-  (str
-   "<html>"
-   "  <form action='' method='post'>"
-   "    Enter prompt: <input type='text' name='prompt' required><br/>"
-   "    <input type='submit' value='Send'>"
-   "  </form>"
-   "</html>"))
+  (slurp "index.html"))
 
 (defn show-form 
   "Form response"
