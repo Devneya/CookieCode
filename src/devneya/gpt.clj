@@ -1,8 +1,7 @@
 (ns devneya.gpt
-  (:require [clojure.data.json :as json])
-  (:require [babashka.http-client :as http])
-  (:require [devneya.utils :as utils])
-  (:require [failjure.core :as f]))
+  (:require [babashka.curl :as curl]
+            [clojure.data.json :as json]
+            [failjure.core :as f]))
 
 (def OPENAI-API-URL "https://api.openai.com/v1/chat/completions") 
 (def OPENAI-MODEL "gpt-3.5-turbo")
@@ -46,15 +45,16 @@
   ([config date text role context]
    (let [body (build-body role text context)]
      ;;if post led to exception, wrap and return it
-     ;;otherwise save request in log and return response
+     ;;otherwise save request in log and return response 
      (f/when-let-ok? 
       [response (f/try* (parse-response
-                         (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
+                         (curl/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
                                                     :body    body})))]
       (when (not-empty (:REQUEST_LOG_PATH config))
-        (save-request date context role text response (:REQUEST_LOG_PATH config)))
+        (save-request date context role text response (:REQUEST_LOG_PATH config))) 
       response)))
   ([config date text role]
    (get-chatgpt-api-response config date text role INITIAL-CONTEXT))
   ([config date text]
    (get-chatgpt-api-response config date text "user" INITIAL-CONTEXT)))
+
