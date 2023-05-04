@@ -12,7 +12,7 @@
    "<html>"
    "  <form action='' method='post'>"
    "    Enter prompt: <input type='text' name='prompt' required><br/>"
-   "    <input type='submit' value='Say Hello'>"
+   "    <input type='submit' value='Send'>"
    "  </form>"
    "</html>"))
 
