@@ -10,7 +10,8 @@
                  [org.babashka/http-client "0.1.8"]
                  [babashka/process "0.4.16"]
                  [clj-commons/clj-yaml "1.0.26"]
-                 [failjure/failjure "2.2.0"]]
+                 [failjure/failjure "2.2.0"]
+                 [ring "1.10.0"]]
   :main ^:skip-aot devneya.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}}
