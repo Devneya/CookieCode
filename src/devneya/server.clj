@@ -25,8 +25,7 @@
 (defn show-code
   "Code response"
   []
-  (println "The code has been successfully generated")
-  {:body (str "Code:\n" (slurp (:CODE_FILENAME config)))
+  {:body (slurp (:CODE_FILENAME config))
    :status 200})
 
 (defn show-error
@@ -40,10 +39,10 @@
   [req]
   (let [prompt (get-in req [:form-params "prompt"])]
     (if prompt
-      ((f/if-let-failed?
-        [fail (prompt/make-prompt-chain config (utils/date-hms) prompt)]
-        (show-error (f/message fail))
-        (show-code)))
+      (f/if-let-failed?
+       [fail (prompt/make-prompt-chain config (utils/date-hms) prompt)]
+       (show-error (f/message fail))
+       (show-code))
       (show-form))))
 
 (defn -main 
