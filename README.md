@@ -38,6 +38,13 @@ Create config file or use `source ./start.sh`
 $ bb devneya [flags] prompt
 ```
 
+Start a webserver:
+
+```
+lein deps ;; optional
+lein run
+```
+
 ## Options
 ```
 "-g" "--[no-]gen" "Generate the code" :default true
