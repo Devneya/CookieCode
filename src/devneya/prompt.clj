@@ -15,7 +15,8 @@
   (f/if-let-ok? ;if gpt/get-chatgpt-api-response doesn't return error, then save respone in file, otherwise return error.
    [response (gpt/get-chatgpt-api-response config date prompt)]
    (spit (:CODE_FILENAME config) (formatter/remove-triple-back-quote response 0 logdata))
-   (timbre/error "Failed to get chat GPT response") ))
+   (do (timbre/error "Failed to get chat GPT response") 
+       response)))
 
 (defn make-initial-prompt
   [config date prompt]
