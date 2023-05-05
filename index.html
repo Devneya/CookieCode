@@ -1,0 +1,104 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <wrapper>    
+        <form action='' method='post'>
+            Enter prompt: <input type='text' name='prompt' required><br/>
+            <input type='submit' value='Send'>
+        </form>
+    </wrapper>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Devneya</title>
+    <style>
+        body {
+            background-color: #0D2538;
+            font-family: Arial, sans-serif;
+            color: #0D2538;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #0077B6;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - 80px);
+        }
+        section {
+            background-color: #FFF;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 20px;
+            text-align: left;
+        }
+        label {
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            font-size: 1.2em;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #0D2538;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #00B4D8;
+            color: #FFF;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #0096C7;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Devneya</h1>
+    </header>
+    <main>
+        <section>
+            <h2>Enter prompt</h2>
+            <form action='' method='post'>
+                <label for="prompt">Prompt:</label>
+                <input type="text" id="prompt" name="prompt" required>
+                <br>
+                <input type="submit" value="Submit">
+            </form>
+        </section>
+    </main>
+</body>
+</html>

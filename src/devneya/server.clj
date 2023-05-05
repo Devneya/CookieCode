@@ -9,13 +9,7 @@
 (def config (utils/load-config))
 
 (def greeting-form
-  (str
-   "<html>"
-   "  <form action='' method='post'>"
-   "    Enter prompt: <input type='text' name='prompt' required><br/>"
-   "    <input type='submit' value='Say Hello'>"
-   "  </form>"
-   "</html>"))
+  (slurp "index.html"))
 
 (defn show-form 
   "Form response"
@@ -28,7 +22,7 @@
   "Code response"
   []
   (timbre/info "The code has been successfully generated. Sending response.")
-  {:body (str "Code:\n" (slurp (:CODE_FILENAME config)))
+  {:body (slurp (:CODE_FILENAME config))
    :status 200})
 
 (defn show-error
@@ -44,10 +38,10 @@
   (timbre/info (str "Server recieved request:\n" req))
   (let [prompt (get-in req [:form-params "prompt"])]
     (if prompt
-      ((f/if-let-failed?
-        [fail (prompt/make-prompt-chain config (utils/date-hms) prompt)]
-        (show-error (f/message fail))
-        (show-code)))
+      (f/if-let-failed?
+       [fail (prompt/make-prompt-chain config (utils/date-hms) prompt)]
+       (show-error (f/message fail))
+       (show-code))
       (show-form))))
 
 (defn -main 

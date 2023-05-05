@@ -48,12 +48,11 @@
    (timbre/info "get-chatgpt-api-response function started")
    (let [body (build-body role text context)]
      ;;if post led to exception, wrap and return it
-     ;;otherwise save request in log and return response
+     ;;otherwise save request in log and return response 
      (f/when-let-ok? 
       [response (f/try* (parse-response
-                         (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
-                                                    :body    body})
-                                                    ))]
+                         (curl/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
+                                                    :body    body})))]
       (if (not-empty (:REQUEST_LOG_PATH config))
         (save-request date context role text response (:REQUEST_LOG_PATH config))
         (timbre/info "Unable to save request log: missing log path!"))
@@ -63,3 +62,4 @@
   ([config date text]
    (timbre/info "Creating request with default (user) role ...")
    (get-chatgpt-api-response config date text "user" INITIAL-CONTEXT)))
+
