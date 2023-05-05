@@ -8,6 +8,8 @@
                  [org.clojure/tools.cli "1.0.214"]
                  [babashka/babashka.curl "0.1.2"]
                  [babashka/process "0.4.16"]
+                 [com.taoensso/timbre "6.1.0"]
+                 [org.babashka/http-client "0.2.9"]
                  [clj-commons/clj-yaml "1.0.26"]
                  [failjure/failjure "2.2.0"]
                  [ring "1.10.0"]]
