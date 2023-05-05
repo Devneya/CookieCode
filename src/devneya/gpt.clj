@@ -2,6 +2,7 @@
   (:require [clojure.data.json :as json])
   (:require [babashka.http-client :as http])
   (:require [devneya.utils :as utils])
+  (:require [taoensso.timbre :as timbre])
   (:require [failjure.core :as f]))
 
 (def OPENAI-API-URL "https://api.openai.com/v1/chat/completions") 
@@ -44,17 +45,21 @@
    Sends request to ChatGPT and gets the answer. \n
    Returns a string containing the text of the ChatGPT API response or wrapped exception from http/post, if occurs."
   ([config date text role context]
+   (timbre/info "get-chatgpt-api-response function started")
    (let [body (build-body role text context)]
      ;;if post led to exception, wrap and return it
      ;;otherwise save request in log and return response
      (f/when-let-ok? 
       [response (f/try* (parse-response
                          (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
-                                                    :body    body})))]
-      (when (not-empty (:REQUEST_LOG_PATH config))
-        (save-request date context role text response (:REQUEST_LOG_PATH config)))
+                                                    :body    body})
+                                                    ))]
+      (if (not-empty (:REQUEST_LOG_PATH config))
+        (save-request date context role text response (:REQUEST_LOG_PATH config))
+        (timbre/info "Unable to save request log: missing log path!"))
       response)))
   ([config date text role]
    (get-chatgpt-api-response config date text role INITIAL-CONTEXT))
   ([config date text]
+   (timbre/info "Creating request with default (user) role ...")
    (get-chatgpt-api-response config date text "user" INITIAL-CONTEXT)))

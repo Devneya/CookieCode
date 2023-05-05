@@ -5,11 +5,13 @@
             [devneya.err :as err]
             [devneya.prompt :as prompt]
             [devneya.utils :as utils]
+            [taoensso.timbre :as timbre]
             [failjure.core :as f]))
 
 (defn usage
   "Composes the summary string"
   [options-summary]
+  (timbre/info "App started in info mode")
   (->> ["Usage: program-name [options] prompt"
         ""
         "Options:"
@@ -22,6 +24,7 @@
        (str/join \newline)))
 
 (defn error-msg [errors]
+  (timbre/error "Error occured while parsing command line args!")
   (str "The following errors occurred while parsing your command:\n\n"
        (str/join \newline errors)))
 
@@ -49,23 +52,28 @@
       {:exit-message (usage summary)})))
 
 (defn run-cli [config args]
+  (timbre/info "Command line app started")
   (let [{:keys [prompt options exit-message ok?]} (validate-args args)
         date (utils/date-hms)]
     (when exit-message (err/exit (if ok? 0 1) exit-message))
+     (if (= (:all options) true)
+    (timbre/info "App started with -a flag"))
     (if (= (:all options) true)
           ;;perform prompt chain and if it wasn't successfull, then plrint error in console
           ;;otherwise print successfull message
       (f/if-let-failed?
        [fail (prompt/make-prompt-chain config date prompt)]
-       (print (f/message fail))
-       (print "Code generated successfully."))
+       (timbre/error (f/message fail))
+       (timbre/info "Code generated, no errors occured!"))
       ;;perform one prompt and execute, if required
       ;;if error occured anywhere print it in console
       ;;otherwise print successfull message
       (f/attempt-all
        [_ (when (= (:gen options) true)
+            (timbre/info "App started with -g flag")
             (prompt/make-initial-prompt config date prompt))
         _ (when (= (:exec options) true)
+            (timbre/info "App started with -x flag")
             (exec/exec-code config))]
-       (print "Code generated.")
+       (timbre/info "Code generated, no errors occured!")
        (f/when-failed [fail] (print (f/message fail)))))))

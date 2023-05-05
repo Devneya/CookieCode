@@ -3,6 +3,7 @@
             [devneya.utils :as utils]
             [failjure.core :as f]
             [ring.adapter.jetty :as jetty]
+            [taoensso.timbre :as timbre]
             [ring.middleware.params :refer [wrap-params]]))
 
 (def config (utils/load-config))
@@ -19,25 +20,28 @@
 (defn show-form 
   "Form response"
   [] 
+  (timbre/info "Sending health check.")
   {:body greeting-form
    :status 200})
 
 (defn show-code
   "Code response"
   []
-  (println "The code has been successfully generated")
+  (timbre/info "The code has been successfully generated. Sending response.")
   {:body (str "Code:\n" (slurp (:CODE_FILENAME config)))
    :status 200})
 
 (defn show-error
   "Error response"
   [err]
+  (timbre/info (str "An error occured during code generation:\n" err))
   {:body (str "Error: " err)
    :status 200})
 
 (defn handler
   "Form handler"
   [req]
+  (timbre/info (str "Server recieved request:\n" req))
   (let [prompt (get-in req [:form-params "prompt"])]
     (if prompt
       ((f/if-let-failed?
@@ -49,5 +53,5 @@
 (defn -main 
   "Run the server on port 3000"
   []
-  (println "server on port 3000: http://localhost:3000")
+  (timbre/info "server on port 3000: http://localhost:3000")
   (jetty/run-jetty (wrap-params handler) {:port 3000}))

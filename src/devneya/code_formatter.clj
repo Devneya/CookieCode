@@ -1,6 +1,7 @@
 (ns devneya.code_formatter
   (:require [failjure.core :as f]
             [clojure.string :as clstr]
+            [taoensso.timbre :as timbre]
             [devneya.utils :as utils]))
 
 (defn remove-triple-back-quote
@@ -8,7 +9,8 @@
    ```(\\w+)?(\r)?\n matches line with opening triple back quote and language name
    ([\\s\\S]+?) matches text between quotes (if exists)
    (\r)?\n``` line with closing triple back quote"
-  [stri merge]
+  [stri merge logdata]
+  (timbre/info logdata)
   (let [matched (re-seq #"(```(\w+)?(\r)?\n([\s\S]*?)(\r)?\n```)" stri)
         index_of_block 4
         blocks (map #(str (get %1 index_of_block) utils/endl) matched)
