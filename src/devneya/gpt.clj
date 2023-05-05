@@ -1,6 +1,6 @@
 (ns devneya.gpt
   (:require [clojure.data.json :as json])
-  (:require [babashka.http-client :as http])
+  (:require [babashka.curl :as curl])
   (:require [devneya.utils :as utils])
   (:require [taoensso.timbre :as timbre])
   (:require [failjure.core :as f]))
@@ -51,7 +51,7 @@
      ;;otherwise save request in log and return response 
      (f/when-let-ok? 
       [response (f/try* (parse-response
-                         (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
+                         (curl/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
                                                      :body    body})
                                                      ))]
       (if (not-empty (:REQUEST_LOG_PATH config))

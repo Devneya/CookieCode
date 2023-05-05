@@ -1,6 +1,6 @@
 (ns devneya.deno_err
   (:require [clojure.string :as clstr]
-   :require [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre]))
 
 
 ;; (defn remove-spaces
