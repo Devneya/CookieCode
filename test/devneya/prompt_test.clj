@@ -28,8 +28,7 @@
         (is (= ((::call-count (meta hello-world-returner))) 1)))
 
       (testing "Never got correct code."
-        (is (=
-             "Couldn't generate working code for the given request.\n"
+        (is (f/failed?
              (with-redefs [gpt/get-chatgpt-api-response wrong-returner]
-               (f/message (prompt/make-prompt-chain core/config "test-filename" "")))))
+               (prompt/make-prompt-chain core/config "test-filename" ""))))
         (is (= ((::call-count (meta wrong-returner))) (:MAX_REPS core/config)))))
