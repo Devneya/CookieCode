@@ -8,7 +8,6 @@
   "Define the kind of command deployctl.\n
    Return string."
   []
-  (timbre/info "Getting user deployctl path...") 
   (if (.exists (io/file (str (System/getProperty "user.home") "/snap/deno/105/.deno/bin/deployctl")))
     (str (System/getProperty "user.home") "/snap/deno/105/.deno/bin/deployctl")
     "deployctl"))
@@ -21,7 +20,6 @@
   ;;try to execute deployctl, if deployment successful return nothing
   ;;otherwise check if compile error file is not empty, then return error as string
   ;;if not, returns wrapped api exception
-   (timbre/info "Deno deployment started") 
    (let [deno-result (bp/shell {:continue true :err (:DENO_ERROR_FILENAME config)}
                                (str (get-deployctl-command)
                                     " deploy --token=" (:DENO_DEPLOY_TOKEN config)

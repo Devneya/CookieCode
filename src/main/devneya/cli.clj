@@ -77,3 +77,6 @@
             (exec/exec-code config))]
        (timbre/info "Code generated, no errors occured!")
        (f/when-failed [fail] (print (f/message fail)))))))
+
+(defn -main [& args]
+  (run-cli (utils/load-config) args))
