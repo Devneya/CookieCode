@@ -1,7 +1,6 @@
-(ns devneya.deno_err
+(ns devneya.denoerr
   (:require [clojure.string :as clstr]
             [taoensso.timbre :as timbre]))
-
 
 ;; (defn remove-spaces
 ;;   [stri]
@@ -28,11 +27,15 @@
     ;; TODO: add correct '\r\n' or '\n' according to the platform  
     (clstr/replace stri re-bad-string #(str " Error starts at string " (get %1 index-of-string-number) " char " (get %1 index-of-char-number)))))
 
-(defn deno-error-formatter
-  ([config]
-   (timbre/info "deno-error-formatter function started with file reading mode")
-   (remove-user-path (remove-colors (slurp (:DENO_ERROR_FILENAME config))) (:CODE_FILENAME config)))
-  ([config error-str]
-   (timbre/info "deno-error-formatter function started with incoming string mode")
-   (remove-user-path (remove-colors error-str) (:CODE_FILENAME config))))
+;; (defn deno-error-formatter
+;;   ([config]
+;;    (timbre/info "deno-error-formatter function started with file reading mode")
+;;    (remove-user-path (remove-colors (slurp (:DENO_ERROR_FILENAME config))) (:CODE_FILENAME config)))
+;;   ([config error-str]
+;;    (timbre/info "deno-error-formatter function started with incoming string mode")
+;;    (remove-user-path (remove-colors error-str) (:CODE_FILENAME config))))
 
+(defn deno-error-formatter
+  [error-str]
+  (timbre/info "deno-error-formatter function started with incoming string mode")
+  (remove-colors error-str))

@@ -1,9 +1,7 @@
 (ns devneya.gpt
-  (:require [clojure.data.json :as json])
-  (:require [babashka.curl :as curl])
-  (:require [devneya.utils :as utils])
   (:require [taoensso.timbre :as timbre])
-  (:require [failjure.core :as f]))
+  (:require [failjure.core :as f])
+  (:require [cljs-http.client :as http]))
 
 (def OPENAI-API-URL "https://api.openai.com/v1/chat/completions") 
 (def OPENAI-MODEL "gpt-3.5-turbo")
@@ -19,26 +17,26 @@
    :Authorization (str "Bearer " openai-key)})
 
 (defn build-body [role text context]
-  (json/write-str {:model OPENAI-MODEL
-                   :temperature TEMPERATURE
-                   :messages (concat context [{:role role :content text}])}))
+  (.stringify js/JSON {:model OPENAI-MODEL
+                       :temperature TEMPERATURE
+                       :messages (concat context [{:role role :content text}])}))
 
 (defn parse-response [response]
-  (get-in (json/read-str (:body response)) ["choices" 0 "message" "content"]))
+  (get-in (.parse js/JSON (:body response)) ["choices" 0 "message" "content"]))
 
-(defn save-request
-  "Gets body of request to AI, received response and logging directory path.
-   Writes it into a new file in the given path."
-  [date context role text parsed-response log-dir-path]
-  (let [file-path (str log-dir-path "/" date ".txt")]
-    (spit file-path (str "Model: " OPENAI-MODEL "\n"
-                         "Temperature: " TEMPERATURE "\n") :append true)
-    (doseq [message (conj context {:role role :content text})]
-      (spit file-path (str "---------------------\n"
-                           "role: "     (:role message) "\n"
-                           "content:\n" (:content message) "\n")
-            :append true))
-    (spit file-path (str "Response:\n" parsed-response "\n\n\n/////////////////////////////////////////\n") :append true)))
+;; (defn save-request
+;;   "Gets body of request to AI, received response and logging directory path.
+;;    Writes it into a new file in the given path."
+;;   [date context role text parsed-response log-dir-path]
+;;   (let [file-path (str log-dir-path "/" date ".txt")]
+;;     (spit file-path (str "Model: " OPENAI-MODEL "\n"
+;;                          "Temperature: " TEMPERATURE "\n") :append true)
+;;     (doseq [message (conj context {:role role :content text})]
+;;       (spit file-path (str "---------------------\n"
+;;                            "role: "     (:role message) "\n"
+;;                            "content:\n" (:content message) "\n")
+;;             :append true))
+;;     (spit file-path (str "Response:\n" parsed-response "\n\n\n/////////////////////////////////////////\n") :append true)))
 
 (defn get-chatgpt-api-response
   "Gets api key, text of the message, role for the message and the previous context. \n
@@ -51,12 +49,11 @@
      ;;otherwise save request in log and return response 
      (f/when-let-ok? 
       [response (f/try* (parse-response
-                         (curl/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
-                                                     :body    body})
-                                                     ))]
-      (if (not-empty (:REQUEST_LOG_PATH config))
-        (save-request date context role text response (:REQUEST_LOG_PATH config))
-        (timbre/info "Unable to save request log: missing log path!"))
+                         (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
+                                                    :body    body})))]
+      ;; (if (not-empty (:REQUEST_LOG_PATH config))
+      ;;   (save-request date context role text response (:REQUEST_LOG_PATH config))
+      ;;   (timbre/info "Unable to save request log: missing log path!"))
       response)))
   ([config date text role]
    (get-chatgpt-api-response config date text role INITIAL-CONTEXT))

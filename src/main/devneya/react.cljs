@@ -1,6 +1,9 @@
 (ns devneya.react
   (:require [reagent.dom :as rdom]
-            [reagent.core :as r]))
+            [reagent.core :as r]
+            [failjure.core :as f]
+            [devneya.prompt :as prompt]
+            [devneya.utils :as utils]))
 
 (defn- request-page []
   (let [prompt (r/atom "")
@@ -21,7 +24,11 @@
          [:br]
          [:button
           {:type "submit"
-           :on-click #(reset! response @prompt)}
+           :on-click #(reset! response (f/attempt f/message (prompt/make-prompt-chain 
+                                                             "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" 
+                                                             3
+                                                             (utils/date-hms) 
+                                                             prompt)))}
           "Submit"]]
         [:input {:type "text"
                  :id "response"
