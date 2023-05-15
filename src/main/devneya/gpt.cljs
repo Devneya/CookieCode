@@ -51,7 +51,8 @@
      (f/when-let-ok? 
       [response (f/try* (parse-response
                          (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
-                                                    :body    body})))]
+                                                    :body    body
+                                                    :with-credentials? false})))]
       ;; (if (not-empty (:REQUEST_LOG_PATH config))
       ;;   (save-request date context role text response (:REQUEST_LOG_PATH config))
       ;;   (timbre/info "Unable to save request log: missing log path!"))
