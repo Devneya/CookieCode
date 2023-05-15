@@ -1,6 +1,7 @@
 (ns devneya.denoerr
   (:require [clojure.string :as clstr]
-            [taoensso.timbre :as timbre]))
+            [taoensso.timbre :as timbre])
+  (:require-macros [failjure.core]))
 
 ;; (defn remove-spaces
 ;;   [stri]

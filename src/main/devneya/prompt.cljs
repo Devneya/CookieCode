@@ -5,7 +5,8 @@
             [devneya.err :as err]
             [failjure.core :as f]
             [taoensso.timbre :as timbre]
-            [devneya.denoerr :as denerr]))
+            [devneya.denoerr :as denerr])
+  (:require-macros [failjure.core]))
 
 (defn make-prompt 
   "Get code filename and prompt.\n
@@ -14,7 +15,8 @@
   [openai-key date prompt logdata]
   (f/if-let-ok? ;if gpt/get-chatgpt-api-response doesn't return error, then save respone in file, otherwise return error.
    [response (gpt/get-chatgpt-api-response openai-key date prompt)]
-   (formatter/remove-triple-back-quote response 0 logdata)
+   response
+   ;;(formatter/remove-triple-back-quote response 0 logdata)
    (do (timbre/error "Failed to get chat GPT response") 
        response)))
 

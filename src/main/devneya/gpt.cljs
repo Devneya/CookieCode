@@ -1,7 +1,8 @@
 (ns devneya.gpt
-  (:require [taoensso.timbre :as timbre])
-  (:require [failjure.core :as f])
-  (:require [cljs-http.client :as http]))
+  (:require [taoensso.timbre :as timbre]
+            [failjure.core :as f]
+            [cljs-http.client :as http])
+  (:require-macros [failjure.core]))
 
 (def OPENAI-API-URL "https://api.openai.com/v1/chat/completions") 
 (def OPENAI-MODEL "gpt-3.5-turbo")
@@ -13,13 +14,13 @@
                                      "Do not wrap the code in a code block.")}])
 
 (defn build-headers [openai-key]
-  {:Content-Type "application/json"
-   :Authorization (str "Bearer " openai-key)})
+  {"Content-Type" "application/json"
+   "Authorization" (str "Bearer " openai-key)})
 
 (defn build-body [role text context]
-  (.stringify js/JSON {:model OPENAI-MODEL
-                       :temperature TEMPERATURE
-                       :messages (concat context [{:role role :content text}])}))
+  {"model" OPENAI-MODEL
+   "temperature" TEMPERATURE
+   "messages" (concat context [{:role role :content text}])})
 
 (defn parse-response [response]
   (get-in (.parse js/JSON (:body response)) ["choices" 0 "message" "content"]))

@@ -2,7 +2,8 @@
   (:require [failjure.core :as f]
             [clojure.string :as clstr]
             [taoensso.timbre :as timbre]
-            [devneya.utils :as utils]))
+            [devneya.utils :as utils])
+  (:require-macros [failjure.core]))
 
 (defn remove-triple-back-quote
   "Removes triple back quote

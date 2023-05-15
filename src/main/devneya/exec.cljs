@@ -1,6 +1,7 @@
 (ns devneya.exec
   (:require [taoensso.timbre :as timbre]
-            [failjure.core :as f]))
+            [failjure.core :as f])
+  (:require-macros [failjure.core]))
 
 ;; (defn get-deployctl-command
 ;;   "Define the kind of command deployctl.\n

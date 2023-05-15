@@ -1,5 +1,6 @@
 (ns devneya.err
-  (:require [failjure.core :as f]))
+  (:require [failjure.core :as f])
+  (:require-macros [failjure.core]))
 
 ;; (defn parse-exception
 ;;   "Parse Throwable exception, return error message"

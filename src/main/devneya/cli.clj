@@ -6,7 +6,8 @@
             [devneya.prompt :as prompt]
             [devneya.utils :as utils]
             [taoensso.timbre :as timbre]
-            [failjure.core :as f]))
+            [failjure.core :as f])
+  (:require-macros [failjure.core]))
 
 (defn usage
   "Composes the summary string"
