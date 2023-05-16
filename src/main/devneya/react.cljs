@@ -3,7 +3,9 @@
             [reagent.core :as r]
             [failjure.core :as f]
             [devneya.prompt :as prompt]
-            [devneya.utils :as utils]))
+            [devneya.utils :as utils]
+            [cljs.core.async :refer [<!]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn- request-page []
   (let [prompt (r/atom "")
@@ -32,11 +34,11 @@
          [:br]
          [:button
           {:type "submit-prompt"
-           :on-click #(reset! response (f/attempt f/message (prompt/make-prompt-chain 
-                                                             @openai-key 
-                                                             3
-                                                             "utils/date-hms"
-                                                             @prompt)))}
+           :on-click #(go (reset! response (f/attempt f/message (<! (prompt/make-prompt-chain 
+                                                                   @openai-key 
+                                                                   3
+                                                                   "utils/date-hms"
+                                                                   @prompt)))))}
           "Submit"]]
         [:input {:type "text"
                  :id "response"
