@@ -1,11 +1,9 @@
-;; (ns devneya.utils
-;;   (:require [clojure.java.io :as io]
-;;             [clojure.string :as clstr]))
+(ns devneya.utils
+  (:require [clojure.string :as clstr]))
 
-;; (defn date-hms
-;;   []
-;;   (-> (java.time.LocalDateTime/now)
-;;       (.format (java.time.format.DateTimeFormatter/ofPattern "yyyy-MM-dd---kk-mm-ss"))))
+(defn date-hms
+  []
+  (.toUTCString (js/Date.)))
 
 ;; (defn index-of [e coll] (first (keep-indexed #(if (= e %2) %1) coll)))
 

@@ -7,7 +7,8 @@
 
 (defn- request-page []
   (let [prompt (r/atom "")
-        response (r/atom "")]
+        response (r/atom "")
+        openai-key (r/atom "")]
     (fn []
       [:div
        [:header
@@ -22,13 +23,20 @@
                   :value @prompt
                   :on-change #(reset! prompt (-> % .-target .-value))}]
          [:br]
+         [:label {:for "api-key"} "OpenAI api key:"]
+         [:input {:type "text"
+                  :id "openai-key"
+                  :name "openai key"
+                  :value @openai-key
+                  :on-change #(reset! openai-key (-> % .-target .-value))}]
+         [:br]
          [:button
-          {:type "submit"
+          {:type "submit-prompt"
            :on-click #(reset! response (f/attempt f/message (prompt/make-prompt-chain 
-                                                             "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" 
+                                                             @openai-key 
                                                              3
-                                                             (utils/date-hms) 
-                                                             prompt)))}
+                                                             "utils/date-hms"
+                                                             @prompt)))}
           "Submit"]]
         [:input {:type "text"
                  :id "response"

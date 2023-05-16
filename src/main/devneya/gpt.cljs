@@ -13,14 +13,18 @@
                                      "Do not apply any formatting or syntax highlighting.\n"
                                      "Do not wrap the code in a code block.")}])
 
+(defn clj->json
+  [ds]
+  (.stringify js/JSON (clj->js ds)))
+
 (defn build-headers [openai-key]
   {"Content-Type" "application/json"
    "Authorization" (str "Bearer " openai-key)})
 
 (defn build-body [role text context]
-  {"model" OPENAI-MODEL
-   "temperature" TEMPERATURE
-   "messages" (concat context [{:role role :content text}])})
+  {:model OPENAI-MODEL
+   :temperature TEMPERATURE
+   :messages (concat context [{:role role :content text}])})
 
 (defn parse-response [response]
   (get-in (.parse js/JSON (:body response)) ["choices" 0 "message" "content"]))
@@ -43,23 +47,21 @@
   "Gets api key, text of the message, role for the message and the previous context. \n
    Sends request to ChatGPT and gets the answer. \n
    Returns a string containing the text of the ChatGPT API response or wrapped exception from http/post, if occurs."
-  ([config date text role context]
+  ([openai-key date text role context]
    (timbre/info "get-chatgpt-api-response function started")
    (let [body (build-body role text context)]
      ;;if post led to exception, wrap and return it
      ;;otherwise save request in log and return response 
-     (f/when-let-ok? 
-      [response (f/try* (parse-response
-                         (http/post OPENAI-API-URL {:headers (build-headers (:OPENAI_KEY config))
-                                                    :body    body
-                                                    :with-credentials? false})))]
+     (f/try*
+      (http/post OPENAI-API-URL {:headers (build-headers openai-key)
+                                 :json-params    body
+                                 :with-credentials? false}))))
       ;; (if (not-empty (:REQUEST_LOG_PATH config))
       ;;   (save-request date context role text response (:REQUEST_LOG_PATH config))
       ;;   (timbre/info "Unable to save request log: missing log path!"))
-      response)))
-  ([config date text role]
-   (get-chatgpt-api-response config date text role INITIAL-CONTEXT))
-  ([config date text]
+  ([openai-key date text role]
+   (get-chatgpt-api-response openai-key date text role INITIAL-CONTEXT))
+  ([openai-key date text]
    (timbre/info "Creating request with default (user) role ...")
-   (get-chatgpt-api-response config date text "user" INITIAL-CONTEXT)))
+   (get-chatgpt-api-response openai-key date text "user" INITIAL-CONTEXT)))
 
