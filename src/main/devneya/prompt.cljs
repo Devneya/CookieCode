@@ -44,15 +44,16 @@
    ;;ideally rewrite this part once again by returnig from exec exaxct type of fail, if code isn't working
    ;;in this case we can use if-let-fail, which will catch it, and handling would be more straightforward
    (let [exec-result (exec/exec-code generated-code)]
-     (when (f/failed? exec-result)
-       (timbre/info (str "Evaluation failed on attempt " attempt "! Retrying..."))
-       (if (< attempt attempt-limit)
-         (f/if-let-ok? ;;get fix prompt result and, if it isn't exception, then continue recursion, otherwise return it
-          [fixed-code (err/extend-fix-prompt-fail
-                       (make-fix-prompt openai-key date generated-code (denerr/deno-error-formatter exec-result) attempt)
-                       attempt)]
-          (make-fix-prompt-chain openai-key attempt-limit date fixed-code (inc attempt)))
-         (f/fail "Couldn't generate working code for the given request.\n"))))) ;;return fail if there is no more reps available, but code is not working
+     (if (f/failed? exec-result)
+       (do (timbre/info (str "Evaluation failed on attempt " attempt "! Retrying..."))
+           (if (< attempt attempt-limit)
+             (f/if-let-ok? ;;get fix prompt result and, if it isn't exception, then continue recursion, otherwise return it
+              [fixed-code (err/extend-fix-prompt-fail
+                           (make-fix-prompt openai-key date generated-code (denerr/deno-error-formatter exec-result) attempt)
+                           attempt)]
+              (make-fix-prompt-chain openai-key attempt-limit date fixed-code (inc attempt)))
+             (f/fail "Couldn't generate working code for the given request.\n")))
+       generated-code))) ;;return fail if there is no more reps available, but code is not working
    ([openai-key attempt-limit date generated-code]
     (make-fix-prompt-chain openai-key attempt-limit date generated-code 1)))
 
