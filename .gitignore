@@ -17,3 +17,4 @@ config.yml
 /code-path/
 start.sh
 deno_error.txt
+.shadow-cljs/

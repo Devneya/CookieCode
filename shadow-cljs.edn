@@ -14,7 +14,12 @@
  {8020 "public"}
 
  :builds
- {:devneya
+ {:devneya-lib
+  {:target :esm
+   :output-dir "public/js"
+   :entries [devneya.exec devneya.gpt]
+   :modules {:api {:exports {makeChain devneya.prompt/make-prompt-chain}}}}
+  :devneya
   {:target :browser
    :output-dir "public/js"
    :asset-path "/js"
