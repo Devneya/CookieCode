@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Submit Form</title>
+    <script type="module" defer src="./core.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <form id="submit-form">
+      <label for="api-key">API Key:</label>
+      <input type="text" id="api-key" name="api-key" required>
+      
+      <label for="prompt">Prompt:</label>
+      <textarea id="prompt" name="prompt" required></textarea>
+      
+      <button type="submit">Submit</button>
+
+    </form>
+    <textarea name="response" id="response" cols="30" rows="10"></textarea>
+</body>
+</html>
