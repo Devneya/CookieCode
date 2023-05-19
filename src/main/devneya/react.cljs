@@ -16,7 +16,7 @@
        [:header
         [:h1 "Devneya"]]
        [:main
-        [:section
+        [:section.type-a
          [:h2 "Enter prompt"]
          [:label {:for "prompt"} "Prompt:"]
          [:input {:type "text"
@@ -33,17 +33,18 @@
                   :on-change #(reset! openai-key (-> % .-target .-value))}]
          [:br]
          [:button
-          {:type "submit-prompt"
+          {:type "submit"
            :on-click #(go (reset! response (f/attempt f/message (<! (prompt/make-prompt-chain 
                                                                    @openai-key 
                                                                    3
                                                                    "utils/date-hms"
                                                                    @prompt)))))}
           "Submit"]]
-        [:input {:type "text"
+        [:section.type-b
+        [:input {:type "response"
                  :id "response"
                  :name "response"
-                 :value @response}]]])))
+                 :value @response}]]]])))
 
 (defn run-react []
   (rdom/render
