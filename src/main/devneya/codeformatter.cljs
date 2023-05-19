@@ -16,7 +16,6 @@
          blocks (map #(str (get %1 index_of_block) utils/endl) matched)
          result (or (if (= matched nil) stri (reduce str blocks)) "")
          result (clstr/replace result #"(```(\w+)?(\r)?\n```)" "")]
-     (print matched)
      (if (= merge 1)
        result
        (if (> (count blocks) 1)
