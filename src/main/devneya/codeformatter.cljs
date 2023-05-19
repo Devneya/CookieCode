@@ -10,22 +10,22 @@
    ```(\\w+)?(\r)?\n matches line with opening triple back quote and language name
    ([\\s\\S]+?) matches text between quotes (if exists)
    (\r)?\n``` line with closing triple back quote"
-  ([stri merge]
-
+  ([merge stri]
    (let [matched (re-seq #"(```(\w+)?(\r)?\n([\s\S]*?)(\r)?\n```)" stri)
          index_of_block 4
          blocks (map #(str (get %1 index_of_block) utils/endl) matched)
          result (or (if (= matched nil) stri (reduce str blocks)) "")
          result (clstr/replace result #"(```(\w+)?(\r)?\n```)" "")]
+     (print matched)
      (if (= merge 1)
        result
        (if (> (count blocks) 1)
          (f/fail "chatGPT splitted the code to multiple blocks, try to simplyfy your request")
          result))))
 
-  ([stri merge logdata]
+  ([merge logdata stri]
    (timbre/info logdata)
-   (remove-triple-back-quote stri merge)))
+   (remove-triple-back-quote merge stri)))
 
 ;; (defn find-first-block
 ;;   "Function uses regexp to find first block in triple back quotes"
