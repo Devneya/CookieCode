@@ -21,7 +21,7 @@
    Send prompt to write a code to AI and returns formatted response.\n
    Return fail of *get-chatgpt-api-response*, if occurs."
   [openai-key date prompt logdata]
-   (gpt/get-chatgpt-api-response openai-key date prompt)
+   (gpt/get-chatgpt-api-async-response openai-key date prompt)
    ;;(formatter/remove-triple-back-quote response 0 logdata)
   )
 
