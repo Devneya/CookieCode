@@ -59,12 +59,12 @@
      ;;otherwise save request in log and return response 
    (go (parse-response (<! (http/post OPENAI-API-URL {:headers (build-headers openai-key)
                                                       :json-params (build-body role text context)
-                                                      :with-credentials? false}))))
+                                                      :with-credentials? false})))))
       ;; (if (not-empty (:REQUEST_LOG_PATH config))
       ;;   (save-request date context role text response (:REQUEST_LOG_PATH config))
       ;;   (timbre/info "Unable to save request log: missing log path!"))
    ([openai-key date text role]
-    (get-chatgpt-api-async-response openai-key date text role INITIAL-CONTEXT)))
+    (get-chatgpt-api-async-response openai-key date text role INITIAL-CONTEXT))
   ([openai-key date text]
    (timbre/info "Creating request with default (user) role ...")
    (get-chatgpt-api-async-response openai-key date text "user" INITIAL-CONTEXT)))
