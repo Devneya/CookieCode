@@ -15,10 +15,6 @@
                                      "Do not apply any formatting or syntax highlighting.\n"
                                      "Do not wrap the code in a code block.")}])
 
-(defn clj->json
-  [ds]
-  (.stringify js/JSON (clj->js ds)))
-
 (defn build-headers [openai-key]
   {"Content-Type" "application/json"
    "Authorization" (str "Bearer " openai-key)})
@@ -50,9 +46,9 @@
 ;;     (spit file-path (str "Response:\n" parsed-response "\n\n\n/////////////////////////////////////////\n") :append true)))
 
 (defn get-chatgpt-api-async-response
-  "Gets api key, text of the message, role for the message and the previous context. \n
-   Sends request to ChatGPT and gets the answer. \n
-   Returns a string containing the text of the ChatGPT API response or wrapped exception from http/post, if occurs."
+  "Get api key, date for logging, text of the message, role for the message and the previous context.\n
+   Send request to ChatGPT and get the answer.\n
+   Return a async channel with text of ChatGPT API response."
   ([openai-key date text role context]
    (timbre/info "get-chatgpt-api-response function started")
      ;;if post led to exception, wrap and return it
@@ -63,8 +59,8 @@
       ;; (if (not-empty (:REQUEST_LOG_PATH config))
       ;;   (save-request date context role text response (:REQUEST_LOG_PATH config))
       ;;   (timbre/info "Unable to save request log: missing log path!"))
-   ([openai-key date text role]
-    (get-chatgpt-api-async-response openai-key date text role INITIAL-CONTEXT))
+  ([openai-key date text role]
+   (get-chatgpt-api-async-response openai-key date text role INITIAL-CONTEXT))
   ([openai-key date text]
    (timbre/info "Creating request with default (user) role ...")
    (get-chatgpt-api-async-response openai-key date text "user" INITIAL-CONTEXT)))

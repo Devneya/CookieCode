@@ -2,12 +2,6 @@
   (:require [failjure.core :as f])
   (:require-macros [failjure.core]))
 
-;; (defn parse-exception
-;;   "Parse Throwable exception, return error message"
-;;   [e]
-;;   (let  [data (get-in (Throwable->map e) [:via 0])] 
-;;     (str "Type:     "(:type data) "\nMessage:  " (:message data))))
-
 (defn extend-initial-prompt-fail
   "Extend initial prompt fail with additional info."
   [initial-result]

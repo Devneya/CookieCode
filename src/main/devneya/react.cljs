@@ -3,7 +3,6 @@
             [reagent.core :as r]
             [failjure.core :as f]
             [devneya.prompt :as prompt]
-            [devneya.utils :as utils]
             [cljs.core.async :refer [<!]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
