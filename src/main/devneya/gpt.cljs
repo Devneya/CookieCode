@@ -6,12 +6,12 @@
   (:require-macros [failjure.core]
                    [cljs.core.async.macros :refer [go]]))
 
-(def OPENAI-API-URL "https://api.openai.com/v1/chat/completions") 
+(def OPENAI-API-URL "https://api.openai.com/v1/chat/completions")
 (def OPENAI-MODEL "gpt-3.5-turbo")
 (def TEMPERATURE 0.3)
 (def INITIAL-CONTEXT [{:role    "system"
-                       :content (str "You are a system that only generates code in JavaScript for Deno Deploy.\n"
-                                     "Do not describe or contextualize the code.\n" 
+                       :content (str "You are a system that only generates code in JavaScript.\n"
+                                     "Do not describe or contextualize the code.\n"
                                      "Do not apply any formatting or syntax highlighting.\n"
                                      "Do not wrap the code in a code block.")}])
 
@@ -35,18 +35,20 @@
   "Gets body of request to AI, received response and logging directory path.
    Writes it into a new file in the given path."
   [context role text parsed-response]
-  (str
-   (reduce
-    (fn [log message]
-      (str
-       log
-       "---------------------\n"
-       "role: "     (:role message) "\n"
-       "content:\n" (:content message) "\n"))
-    (str "Model: " OPENAI-MODEL "\n"
-         "Temperature: " TEMPERATURE "\n")
-    (conj context {:role role :content text}))
-   (str "Response:\n" parsed-response "\n/////////////////////////////////////////\n\n\n")))
+  (if (f/failed? parsed-response)
+    parsed-response
+    (str
+     (reduce
+      (fn [log message]
+        (str
+         log
+         "---------------------\n"
+         "role: "     (:role message) "\n"
+         "content:\n" (:content message) "\n"))
+      (str "Model: " OPENAI-MODEL "\n"
+           "Temperature: " TEMPERATURE "\n")
+      (conj context {:role role :content text}))
+     (str "Response:\n" parsed-response "\n"))))
 
 (defn get-chatgpt-api-async-response
   "Get api key, date for logging, text of the message, role for the message and the previous context.\n

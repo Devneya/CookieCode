@@ -4,7 +4,6 @@
             [devneya.exec :as exec]
             [failjure.core :as f]
             [taoensso.timbre :as timbre]
-            [devneya.denoerr :as denerr]
             [cljs.core.async :refer [<!]])
   (:require-macros [failjure.core]
                    [cljs.core.async.macros :refer [go]]))
@@ -12,8 +11,9 @@
 (defn safe-handle-response-channel
   [response-channel handler]
   (go (let [response (<! response-channel)]
-        (when (not (f/failed? response))
-          (handler response)))))
+        (if (not (f/failed? response))
+          (handler response)
+          response))))
 
 (defn make-prompt-channel
   "Get api key, date for logging and prompt.\n
@@ -44,7 +44,7 @@
                             "\nAn error occurred while executing this code:\n"
                             exec-error
                             "\nRewrite code to fix it. Write only code. Do not use ```.")
-                       (str "Got chat GPT fixes for attempt" attempt ".")))
+                       (str "Got chat GPT fixes for attempt " attempt ".")))
 
 (defn make-fix-prompt-chain
   "Get api key, request attempt limit, date for logging, code generation channel and attempt number.\n
