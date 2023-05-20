@@ -62,7 +62,7 @@
               openai-key
               attempt-limit
               date
-              (make-fix-prompt openai-key date response (denerr/deno-error-formatter exec-result) attempt)
+              (make-fix-prompt openai-key date response exec-result attempt)
               (inc attempt))
              (f/fail "Couldn't generate working code for the given request.\n"))) ;;return fail if there is no more reps available, but code is not working
        response))))

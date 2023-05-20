@@ -31,19 +31,22 @@
     (f/fail (str "Request failed with status: " (:status response) "and body: " (:body response)))
     (get-in (:body response) [:choices 0 :message :content])))
 
-;; (defn save-request
-;;   "Gets body of request to AI, received response and logging directory path.
-;;    Writes it into a new file in the given path."
-;;   [date context role text parsed-response log-dir-path]
-;;   (let [file-path (str log-dir-path "/" date ".txt")]
-;;     (spit file-path (str "Model: " OPENAI-MODEL "\n"
-;;                          "Temperature: " TEMPERATURE "\n") :append true)
-;;     (doseq [message (conj context {:role role :content text})]
-;;       (spit file-path (str "---------------------\n"
-;;                            "role: "     (:role message) "\n"
-;;                            "content:\n" (:content message) "\n")
-;;             :append true))
-;;     (spit file-path (str "Response:\n" parsed-response "\n\n\n/////////////////////////////////////////\n") :append true)))
+(defn build-request-info
+  "Gets body of request to AI, received response and logging directory path.
+   Writes it into a new file in the given path."
+  [context role text parsed-response]
+  (str
+   (reduce
+    (fn [log message]
+      (str
+       log
+       "---------------------\n"
+       "role: "     (:role message) "\n"
+       "content:\n" (:content message) "\n"))
+    (str "Model: " OPENAI-MODEL "\n"
+         "Temperature: " TEMPERATURE "\n")
+    (conj context {:role role :content text}))
+   (str "Response:\n" parsed-response "\n/////////////////////////////////////////\n\n\n")))
 
 (defn get-chatgpt-api-async-response
   "Get api key, date for logging, text of the message, role for the message and the previous context.\n
@@ -53,12 +56,11 @@
    (timbre/info "get-chatgpt-api-response function started")
      ;;if post led to exception, wrap and return it
      ;;otherwise save request in log and return response 
-   (go (parse-response (<! (http/post OPENAI-API-URL {:headers (build-headers openai-key)
-                                                      :json-params (build-body role text context)
-                                                      :with-credentials? false})))))
-      ;; (if (not-empty (:REQUEST_LOG_PATH config))
-      ;;   (save-request date context role text response (:REQUEST_LOG_PATH config))
-      ;;   (timbre/info "Unable to save request log: missing log path!"))
+   (go (let [response (parse-response (<! (http/post OPENAI-API-URL {:headers (build-headers openai-key)
+                                                                     :json-params (build-body role text context)
+                                                                     :with-credentials? false})))]
+         (timbre/info (build-request-info context role text response))
+         response)))
   ([openai-key date text role]
    (get-chatgpt-api-async-response openai-key date text role INITIAL-CONTEXT))
   ([openai-key date text]
