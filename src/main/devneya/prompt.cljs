@@ -64,7 +64,12 @@
               date
               (make-fix-prompt openai-key date response exec-result attempt)
               (inc attempt))
-             (f/fail "Couldn't generate working code for the given request.\n"))) ;;return fail if there is no more reps available, but code is not working
+             (f/fail "Couldn't generate working code for the given request.\n"))
+             (str "Unable to generate request")
+          ;; (if (< attempt attempt-limit)
+          ;;   (str "Evaluation failed on attempt " attempt "! Retrying...")
+          ;;   (str "Unable to generate request"))
+          ) ;;return fail if there is no more reps available, but code is not working
        response))))
   ([openai-key attempt-limit date generated-code-channel]
    (make-fix-prompt-chain openai-key attempt-limit date generated-code-channel 1)))
