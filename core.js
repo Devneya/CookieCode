@@ -3,6 +3,7 @@ import {test} from './public/js/api.js';
 const formSubmit = document.getElementById('submit-form')
 
 const buttonPopup = document.getElementsByClassName('show-form')
+const response = document.getElementById('response')
 
 formSubmit.addEventListener("submit", function(event){
     event.preventDefault();
@@ -13,6 +14,8 @@ formSubmit.addEventListener("submit", function(event){
     (async () => {
         const meta = await test(apiKey, prompt);
         console.log(meta); // {"metadata": "for: test.png"}
+        let res = JSON.parse(JSON.stringify(meta))
+        response.value = res.arr[res.arr.length - 1].choices[0].message.content
     })();
 
 })
