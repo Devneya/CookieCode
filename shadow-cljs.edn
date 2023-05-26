@@ -8,7 +8,8 @@
                 [com.taoensso/timbre "6.1.0"]
                 [clj-commons/clj-yaml "1.0.26"]
                 [failjure/failjure "2.2.0"]
-                [cljs-http "0.1.46"]]
+                [cljs-http "0.1.46"]
+                [lambdaisland/fetch "1.3.74"]]
 
  :dev-http
  {8020 "public"}
@@ -18,7 +19,8 @@
   {:target :esm
    :output-dir "public/js"
    :entries [devneya.exec devneya.gpt]
-   :modules {:api {:exports {makeChain devneya.prompt/make-prompt-chain}}}}
+   :modules {:api {:exports {test devneya.gpt/testfunc
+                             makeChain devneya.prompt/make-prompt-chain}}}}
   :devneya
   {:target :browser
    :output-dir "public/js"
