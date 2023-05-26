@@ -1,12 +1,25 @@
-import {makeChain} from './public/js/api.js';
+import {test} from './public/js/api.js';
 
-const buttonSubmit = document.getElementById('submit-form')
-const response = document.getElementById('response')
+const formSubmit = document.getElementById('submit-form')
 
-buttonSubmit.addEventListener("submit", function(event){
+const buttonPopup = document.getElementsByClassName('show-form')
+
+formSubmit.addEventListener("submit", function(event){
     event.preventDefault();
 
     let apiKey = document.getElementById("api-key").value;
     let prompt = document.getElementById("prompt").value;
-    response.value = JSON.stringify(makeChain(apiKey, 3, "date", prompt))
+
+    (async () => {
+        const meta = await test(apiKey, prompt);
+        console.log(meta); // {"metadata": "for: test.png"}
+    })();
+
 })
+
+buttonPopup[0].addEventListener("click", function(event){
+    
+    formSubmit.classList.toggle("active")
+});
+
+
