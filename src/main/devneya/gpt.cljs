@@ -75,11 +75,8 @@
 (defn testfunc 
   "testfunc" 
   [openai-key prompt]
-  (def response (atom nil))
-  (let [resp (fetch/post OPENAI-API-URL {:headers (build-headers openai-key)
+  (fetch/post OPENAI-API-URL {:headers (build-headers openai-key)
                               :body (build-body "user" prompt INITIAL-CONTEXT)
-                              :content-type :json})]
-    (reset! response resp)
-    response)
+                              :content-type :json})
 )
 (:export testfunc)
