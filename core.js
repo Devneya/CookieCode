@@ -6,15 +6,15 @@ const buttonPopup = document.getElementsByClassName('show-form')
 const response = document.getElementById('response')
 
 formSubmit.addEventListener("submit", function(event){
+    response.value = "";
     event.preventDefault();
 
     let apiKey = document.getElementById("api-key").value;
     let prompt = document.getElementById("prompt").value;
 
     (async () => {
-        const meta = await test(apiKey, prompt);
-        console.log(meta); // {"metadata": "for: test.png"}
-        let res = JSON.parse(JSON.stringify(meta))
+        let data = await test(apiKey, prompt);
+        let res = JSON.parse(JSON.stringify(data))
         response.value = res.arr[res.arr.length - 1].choices[0].message.content
     })();
 
