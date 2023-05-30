@@ -2,8 +2,8 @@
   (:require [taoensso.timbre :as timbre]
             [failjure.core :as f]
             [cljs-http.client :as http]
-            [cljs.core.async :as async :refer [<!]]
-            [lambdaisland.fetch :as fetch])
+            [cljs.core.async :refer [<!]]
+            [devneya.utils :refer [chan->promise]])
   (:require-macros [failjure.core]
                    [cljs.core.async.macros :refer [go]]))
 
@@ -69,11 +69,6 @@
   ([openai-key date text]
    (timbre/info "Creating request with default (user) role ...")
    (get-chatgpt-api-async-response openai-key date text "user" INITIAL-CONTEXT)))
-
-(defn chan->promise [c]
-  (js/Promise.
-   (fn [resolve _]
-     (async/take c resolve))))
 
 (defn testfunc 
   "testfunc" 

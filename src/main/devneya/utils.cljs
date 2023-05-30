@@ -1,9 +1,15 @@
 (ns devneya.utils
-  (:require [clojure.string :as clstr]))
+  (:require [clojure.string :as clstr]
+            [cljs.core.async :as async]))
 
 (defn date-hms
   []
   (.toUTCString (js/Date.)))
+
+(defn chan->promise [c]
+  (js/Promise.
+   (fn [resolve _]
+     (async/take c resolve))))
 
 ;; (defn index-of [e coll] (first (keep-indexed #(if (= e %2) %1) coll)))
 
