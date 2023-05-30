@@ -4,6 +4,7 @@
             [devneya.gpt :as gpt]
             [cljs.core.async :refer [chan]]
             [devneya.codeFormatter :as cf]
+            [devneya.err :refer [map-not-fail]]
             [devneya.utils :refer [ai-config ok-http-status]]))
 
 (defn build-request-info
@@ -47,8 +48,8 @@
     "user"
     context
     (chan 1 (map (comp
-                  (partial cf/remove-triple-back-quote 0 logdata)
-                  log-request
+                  (partial map-not-fail (partial cf/remove-triple-back-quote 0 logdata))
+                  (partial map-not-fail (log-request context "user" code-request))
                   parse-response)))))
   ([openai-key code-request logdata]
    (generate-code-async openai-key code-request logdata (:INITIAL-CONTEXT ai-config)))

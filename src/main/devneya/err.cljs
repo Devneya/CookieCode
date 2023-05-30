@@ -2,6 +2,12 @@
   (:require [failjure.core :as f])
   (:require-macros [failjure.core]))
 
+(defn map-not-fail
+  [fun result]
+  (if (f/failed? result)
+    result
+    (fun result)))
+
 (defn extend-initial-prompt-fail
   "Extend initial prompt fail with additional info."
   [initial-result]

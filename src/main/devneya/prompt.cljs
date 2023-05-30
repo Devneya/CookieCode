@@ -35,18 +35,20 @@
    Return async channel with fail if couldn't fix the code and if it occured on some prompt, or fixed code otherwise."
   ([openai-key attempt-limit generated-code-channel attempt]
    (let [out-chan (chan)]
-     (go (let [generated-code (<! generated-code-channel)]
-           (f/if-let-failed?
-            [exec-result (exec/exec-code generated-code)]
-            (do (timbre/info (str "Evaluation failed on attempt " attempt "! Retrying..."))
-                (>! out-chan (if (< attempt attempt-limit)
-                               (<! (make-fix-prompt-chain
-                                    openai-key
-                                    attempt-limit
-                                    (make-fix-prompt openai-key generated-code exec-result attempt)
-                                    (inc attempt)))
-                               (f/fail "Couldn't generate working code for the given request.\n"))))
-            (>! out-chan generated-code))))
+     (go (f/if-let-failed?
+          [result (<! generated-code-channel)]
+          (>! out-chan result)
+          (f/if-let-failed?
+           [exec-result (exec/exec-code result)]
+           (do (timbre/info (str "Evaluation failed on attempt " attempt "! Retrying..."))
+               (>! out-chan (if (< attempt attempt-limit)
+                              (<! (make-fix-prompt-chain
+                                   openai-key
+                                   attempt-limit
+                                   (make-fix-prompt openai-key result exec-result attempt)
+                                   (inc attempt)))
+                              (f/fail "Couldn't generate working code for the given request.\n"))))
+           (>! out-chan result))))
      out-chan))
   ([openai-key attempt-limit generated-code-channel]
    (make-fix-prompt-chain openai-key attempt-limit generated-code-channel 1)))
