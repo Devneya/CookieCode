@@ -3,7 +3,9 @@
             [devneya.exec :as exec]
             [failjure.core :as f]
             [taoensso.timbre :as timbre]
-            [cljs.core.async :refer [chan <! >!]])
+            [cljs.core.async :refer [chan <! >!]]
+            [devneya.prompt :as prompt]
+            [devneya.utils :refer [chan->promise]])
   (:require-macros [failjure.core]
                    [cljs.core.async.macros :refer [go]]))
 
@@ -63,4 +65,8 @@
    attempt-limit
    (make-initial-prompt openai-key prompt)))
 
-(:export make-prompt-chain)
+(defn make-prompt-promise
+  [openai-key attempt-limit prompt]
+  (chan->promise (make-prompt-chain openai-key attempt-limit prompt)))
+
+(:export make-prompt-promise)

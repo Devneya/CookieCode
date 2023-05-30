@@ -20,7 +20,7 @@
    :output-dir "public/js"
    :entries [devneya.exec devneya.gpt]
    :modules {:api {:exports {test devneya.gpt/testfunc
-                             makeChain devneya.prompt/make-prompt-chain}}}}
+                             makeChain devneya.prompt/make-prompt-promise}}}}
   :devneya
   {:target :browser
    :output-dir "public/js"
