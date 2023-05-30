@@ -1,74 +1,55 @@
 (ns devneya.prompt
-  (:require [devneya.gpt :as gpt]
-            [devneya.codeformatter :as formatter]
+  (:require [devneya.codeGeneration :as gen]
             [devneya.exec :as exec]
             [failjure.core :as f]
             [taoensso.timbre :as timbre]
-            [cljs.core.async :refer [<!]])
+            [cljs.core.async :refer [chan <! >!]])
   (:require-macros [failjure.core]
                    [cljs.core.async.macros :refer [go]]))
 
-(defn safe-handle-response-channel
-  [response-channel handler]
-  (go (let [response (<! response-channel)]
-        (if (not (f/failed? response))
-          (handler response)
-          response))))
-
-(defn make-prompt-channel
-  "Get api key, date for logging and prompt.\n
-   Send prompt to write a code to AI.\n
-   Return async channel with fotmatted code or with fail, if prompt returned error."
-  ([openai-key date prompt logdata]
-   (safe-handle-response-channel
-    (gpt/get-chatgpt-api-async-response openai-key date prompt)
-    (partial formatter/remove-triple-back-quote 0 logdata)))
-  ([openai-key date prompt]
-   (make-prompt-channel openai-key date prompt "")))
-
-
 (defn make-initial-prompt
-  [openai-key date prompt]
+  [openai-key prompt]
   (timbre/info "Creating initial prompt...")
-  (make-prompt-channel openai-key date (str "Write only code. Do not use ```. " prompt) "Got chat GPT code for initial request"))
+  (gen/generate-code-async
+   openai-key
+   (str "Write only code. Do not use ```. " prompt)
+   "Got chat GPT code for initial request"))
 
 (defn make-fix-prompt
   "Get api key, date for logging, code, its execution error and attempt number.\n
    Send fix prompt.\n
    Return async channel with fotmatted code or with fail."
-  [openai-key date generated-code exec-error attempt]
+  [openai-key generated-code exec-error attempt]
   (timbre/info "Making fix prompt...")
-  (make-prompt-channel openai-key date
-                       (str "Here is a code:\n"
-                            generated-code
-                            "\nAn error occurred while executing this code:\n"
-                            exec-error
-                            "\nRewrite code to fix it. Write only code. Do not use ```.")
-                       (str "Got chat GPT fixes for attempt " attempt ".")))
+  (gen/generate-code-async openai-key
+                           (str "Here is a code:\n"
+                                generated-code
+                                "\nAn error occurred while executing this code:\n"
+                                exec-error
+                                "\nRewrite code to fix it. Write only code. Do not use ```.")
+                           (str "Got chat GPT fixes for attempt " attempt ".")))
 
 (defn make-fix-prompt-chain
   "Get api key, request attempt limit, date for logging, code generation channel and attempt number.\n
    Make fix prompt chain: try to execute current code and send fix prompt, if needed, *MAX_REPS* times.\n
    Return async channel with fail if couldn't fix the code and if it occured on some prompt, or fixed code otherwise."
-  ([openai-key attempt-limit date generated-code-channel attempt]
-   (safe-handle-response-channel
-    generated-code-channel
-    (fn [response]
-      (f/if-let-failed?
-       [exec-result (exec/exec-code response)]
-       (do (timbre/info (str "Evaluation failed on attempt " attempt "! Retrying..."))
-           (if (< attempt attempt-limit)
-             (make-fix-prompt-chain
-              openai-key
-              attempt-limit
-              date
-              (make-fix-prompt openai-key date response exec-result attempt)
-              (inc attempt))
-             (f/fail "Couldn't generate working code for the given request.\n"))
-          ) ;;return fail if there is no more reps available, but code is not working
-       response))))
-  ([openai-key attempt-limit date generated-code-channel]
-   (make-fix-prompt-chain openai-key attempt-limit date generated-code-channel 1)))
+  ([openai-key attempt-limit generated-code-channel attempt]
+   (let [out-chan (chan)]
+     (go (let [generated-code (<! generated-code-channel)]
+           (f/if-let-failed?
+            [exec-result (exec/exec-code generated-code)]
+            (do (timbre/info (str "Evaluation failed on attempt " attempt "! Retrying..."))
+                (>! out-chan (if (< attempt attempt-limit)
+                               (<! (make-fix-prompt-chain
+                                    openai-key
+                                    attempt-limit
+                                    (make-fix-prompt openai-key generated-code exec-result attempt)
+                                    (inc attempt)))
+                               (f/fail "Couldn't generate working code for the given request.\n"))))
+            (>! out-chan generated-code))))
+     out-chan))
+  ([openai-key attempt-limit generated-code-channel]
+   (make-fix-prompt-chain openai-key attempt-limit generated-code-channel 1)))
 
 (defn make-prompt-chain
   "Get api key, request attempt limit, date for logging and prompt.\n
@@ -79,6 +60,6 @@
    openai-key
    attempt-limit
    date
-   (make-initial-prompt openai-key date prompt)))
+   (make-initial-prompt openai-key prompt)))
 
 (:export make-prompt-chain)

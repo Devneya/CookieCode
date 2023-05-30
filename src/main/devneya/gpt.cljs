@@ -2,79 +2,38 @@
   (:require [taoensso.timbre :as timbre]
             [failjure.core :as f]
             [cljs-http.client :as http]
-            [cljs.core.async :refer [<!]]
-            [devneya.utils :refer [chan->promise]])
-  (:require-macros [failjure.core]
-                   [cljs.core.async.macros :refer [go]]))
-
-(def OPENAI-API-URL "https://api.openai.com/v1/chat/completions")
-(def OPENAI-MODEL "gpt-3.5-turbo")
-(def TEMPERATURE 0.3)
-(def INITIAL-CONTEXT [{:role    "system"
-                       :content (str "You are a system that only generates code in JavaScript.\n"
-                                     "Do not describe or contextualize the code.\n"
-                                     "Do not apply any formatting or syntax highlighting.\n"
-                                     "Do not wrap the code in a code block.")}])
+            [cljs.core.async :refer [chan]]
+            [devneya.utils :refer [chan->promise ai-config]])
+  (:require-macros [failjure.core]))
 
 (defn build-headers [openai-key]
   {"Content-Type" "application/json"
    "Authorization" (str "Bearer " openai-key)})
 
 (defn build-body [role text context]
-  {:model OPENAI-MODEL
-   :temperature TEMPERATURE
+  {:model (:OPENAI-MODEL ai-config)
+   :temperature (:TEMPERATURE ai-config)
    :messages (concat context [{:role role :content text}])})
-
-(def ok-http-status 200)
-
-(defn parse-response [response]
-  (if (not= (:status response) ok-http-status)
-    (f/fail (str "Request failed with status: " (:status response) "and body: " (:body response)))
-    (get-in (:body response) [:choices 0 :message :content])))
-
-(defn build-request-info
-  "Gets body of request to AI, received response and logging directory path.
-   Writes it into a new file in the given path."
-  [context role text parsed-response]
-  (if (f/failed? parsed-response)
-    parsed-response
-    (str
-     (reduce
-      (fn [log message]
-        (str
-         log
-         "---------------------\n"
-         "role: "     (:role message) "\n"
-         "content:\n" (:content message) "\n"))
-      (str "Model: " OPENAI-MODEL "\n"
-           "Temperature: " TEMPERATURE "\n")
-      (conj context {:role role :content text}))
-     (str "Response:\n" parsed-response "\n"))))
 
 (defn get-chatgpt-api-async-response
   "Get api key, date for logging, text of the message, role for the message and the previous context.\n
    Send request to ChatGPT and get the answer.\n
    Return a async channel with text of ChatGPT API response."
-  ([openai-key date text role context]
+  ([openai-key text role context output-channel]
    (timbre/info "get-chatgpt-api-response function started")
-     ;;if post led to exception, wrap and return it
-     ;;otherwise save request in log and return response 
-   (go (let [response (parse-response (<! (http/post OPENAI-API-URL {:headers (build-headers openai-key)
-                                                                     :json-params (build-body role text context)
-                                                                     :with-credentials? false})))]
-         (timbre/info (build-request-info context role text response))
-         response)))
-  ([openai-key date text role]
-   (get-chatgpt-api-async-response openai-key date text role INITIAL-CONTEXT))
-  ([openai-key date text]
-   (timbre/info "Creating request with default (user) role ...")
-   (get-chatgpt-api-async-response openai-key date text "user" INITIAL-CONTEXT)))
+   (http/post (:OPENAI-API-URL ai-config) {:headers (build-headers openai-key)
+                                           :json-params (build-body role text context)
+                                           :with-credentials? false
+                                           :channel output-channel}))
+  ([openai-key text role context]
+   (get-chatgpt-api-async-response openai-key text role context (chan))))
 
-(defn testfunc 
-  "testfunc" 
+(defn testfunc
+  "testfunc"
   [openai-key prompt]
-  (chan->promise (http/post OPENAI-API-URL {:headers (build-headers openai-key)
-                                :body (build-body "user" prompt INITIAL-CONTEXT)
-                                :content-type :json}))
-)
+  (chan->promise (http/post
+                  (:OPENAI-API-URL ai-config)
+                  {:headers (build-headers openai-key)
+                   :body (build-body "user" prompt (:INITIAL-CONTEXT ai-config))
+                   :content-type :json})))
 (:export testfunc)

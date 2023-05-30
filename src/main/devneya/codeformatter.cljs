@@ -1,4 +1,4 @@
-(ns devneya.codeformatter
+(ns devneya.codeFormatter
   (:require [failjure.core :as f]
             [clojure.string :as clstr]
             [taoensso.timbre :as timbre]
