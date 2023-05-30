@@ -38,7 +38,6 @@
                         (let [resp (f/attempt f/message (<! (prompt/make-prompt-chain
                                                              @openai-key
                                                              3
-                                                             "utils/date-hms"
                                                              @prompt)))]
                           (timbre/info (str "returned on click to react: " resp))
                           (reset! response resp)))}

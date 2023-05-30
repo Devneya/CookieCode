@@ -57,11 +57,10 @@
   "Get api key, request attempt limit, date for logging and prompt.\n
    Make prompt chain: one initial prompt, then start fix prompt chain.\n
    Return async channel with fail, if couldn't generate working code and if it occured on some prompt."
-  [openai-key attempt-limit date prompt]
+  [openai-key attempt-limit prompt]
   (make-fix-prompt-chain
    openai-key
    attempt-limit
-   date
    (make-initial-prompt openai-key prompt)))
 
 (:export make-prompt-chain)
