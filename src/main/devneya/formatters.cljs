@@ -1,11 +1,30 @@
-(ns devneya.denoerr
-  (:require [clojure.string :as clstr]
-            [taoensso.timbre :as timbre])
+(ns devneya.formatters
+  (:require [failjure.core :as f]
+            [clojure.string :as clstr]
+            [taoensso.timbre :as timbre]
+            [devneya.utils :as utils])
   (:require-macros [failjure.core]))
 
-;; (defn remove-spaces
-;;   [stri]
-;;   (clstr/replace (clstr/trim stri) #"([\s]+)" " "))
+(defn remove-triple-back-quote
+  "Removes triple back quote
+   ```(\\w+)?(\r)?\n matches line with opening triple back quote and language name
+   ([\\s\\S]+?) matches text between quotes (if exists)
+   (\r)?\n``` line with closing triple back quote"
+  ([merge stri]
+   (let [matched (re-seq #"(```(\w+)?(\r)?\n([\s\S]*?)(\r)?\n```)" stri)
+         index_of_block 4
+         blocks (map #(str (get %1 index_of_block) utils/endl) matched)
+         result (or (if (= matched nil) stri (reduce str blocks)) "")
+         result (clstr/replace result #"(```(\w+)?(\r)?\n```)" "")]
+     (if (= merge 1)
+       result
+       (if (> (count blocks) 1)
+         (f/fail "chatGPT splitted the code to multiple blocks, try to simplyfy your request")
+         result))))
+
+  ([merge logdata stri]
+   (timbre/info logdata)
+   (remove-triple-back-quote merge stri)))
 
 (defn remove-colors
   [stri]
@@ -27,16 +46,3 @@
         index-of-char-number 4]
     ;; TODO: add correct '\r\n' or '\n' according to the platform  
     (clstr/replace stri re-bad-string #(str " Error starts at string " (get %1 index-of-string-number) " char " (get %1 index-of-char-number)))))
-
-;; (defn deno-error-formatter
-;;   ([config]
-;;    (timbre/info "deno-error-formatter function started with file reading mode")
-;;    (remove-user-path (remove-colors (slurp (:DENO_ERROR_FILENAME config))) (:CODE_FILENAME config)))
-;;   ([config error-str]
-;;    (timbre/info "deno-error-formatter function started with incoming string mode")
-;;    (remove-user-path (remove-colors error-str) (:CODE_FILENAME config))))
-
-(defn deno-error-formatter
-  [error-str]
-  (timbre/info "deno-error-formatter function started with incoming string mode")
-  (remove-colors error-str))

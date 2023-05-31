@@ -18,20 +18,13 @@
  {:devneya-lib
   {:target :esm
    :output-dir "public/js"
-;;    :entries [devneya.exec 
-;;              devneya.gpt 
-;;              devneya.prompt 
-;;              devneya.codeGeneration 
-;;              devneya.codeFormatter 
-;;              devneya.err
-;;              devneya.utils]
    :modules
    {:api
     {:entries [devneya.exec
                devneya.gpt
                devneya.prompt
                devneya.codeGeneration
-               devneya.codeFormatter
+               devneya.formatters
                devneya.err
                devneya.utils]
      :exports {test devneya.gpt/test-post

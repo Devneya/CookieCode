@@ -16,9 +16,9 @@
    :messages (concat context [{:role role :content text}])})
 
 (defn get-chatgpt-api-async-response
-  "Get api key, date for logging, text of the message, role for the message and the previous context.\n
-   Send request to ChatGPT and get the answer.\n
-   Return a async channel with text of ChatGPT API response."
+  "Get api key, text of the message, role for the message, previous context and output channel ((chan) by default).\n
+   Send request to ChatGPT.\n
+   Return output channel with result."
   ([openai-key text role context output-channel]
    (timbre/info "get-chatgpt-api-response function started")
    (http/post (:OPENAI-API-URL ai-config) {:headers (build-headers openai-key)

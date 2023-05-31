@@ -18,9 +18,9 @@
    "Got chat GPT code for initial request"))
 
 (defn make-fix-prompt
-  "Get api key, date for logging, code, its execution error and attempt number.\n
-   Send fix prompt.\n
-   Return async channel with fotmatted code or with fail."
+  "Get api key, generated code, its execution error and attempt number.\n
+   Make generate code request to fix.\n
+   Return async channel with fixed code or with fail."
   [openai-key generated-code exec-error attempt]
   (timbre/info "Making fix prompt...")
   (gen/generate-code-async openai-key
@@ -32,9 +32,9 @@
                            (str "Got chat GPT fixes for attempt " attempt ".")))
 
 (defn make-fix-prompt-chain
-  "Get api key, request attempt limit, date for logging, code generation channel and attempt number.\n
+  "Get api key, request attempt limit, current code generation channel and attempt number.\n
    Make fix prompt chain: try to execute current code and send fix prompt, if needed, *MAX_REPS* times.\n
-   Return async channel with fail if couldn't fix the code and if it occured on some prompt, or fixed code otherwise."
+   Return async channel with fail if couldn't fix the code and if it occured on some generation request, or fixed code otherwise."
   ([openai-key attempt-limit generated-code-channel attempt]
    (let [out-chan (chan)]
      (go (f/if-let-failed?
@@ -56,9 +56,9 @@
    (make-fix-prompt-chain openai-key attempt-limit generated-code-channel 1)))
 
 (defn make-prompt-chain
-  "Get api key, request attempt limit, date for logging and prompt.\n
+  "Get api key, request attempt limit and prompt.\n
    Make prompt chain: one initial prompt, then start fix prompt chain.\n
-   Return async channel with fail, if couldn't generate working code and if it occured on some prompt."
+   Return async channel with fail, if couldn't generate working code and if it occured on some prompt or with working code."
   [openai-key attempt-limit prompt]
   (make-fix-prompt-chain
    openai-key
