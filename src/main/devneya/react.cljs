@@ -3,8 +3,8 @@
             [reagent.core :as r]
             [failjure.core :as f]
             [devneya.prompt :as prompt]
-            [cljs.core.async :refer [<!]]
-            [taoensso.timbre :as timbre])
+            [devneya.utils :refer [date-hms log-with-id]]
+            [cljs.core.async :refer [<!]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn- request-page []
@@ -35,11 +35,13 @@
          [:button
           {:type "submit"
            :on-click #(go 
-                        (let [resp (f/attempt f/message (<! (prompt/make-prompt-chain
+                        (let [current-time (date-hms)
+                              resp (f/attempt f/message (<! (prompt/make-prompt-chain
+                                                             current-time
                                                              @openai-key
                                                              3
                                                              @prompt)))]
-                          (timbre/info (str "returned on click to react: " resp))
+                          (log-with-id current-time (str "returned on click to react: " resp))
                           (reset! response resp)))}
           "Submit"]]
         [:section.type-b

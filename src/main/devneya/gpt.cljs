@@ -1,9 +1,8 @@
 (ns devneya.gpt
-  (:require [taoensso.timbre :as timbre]
-            [failjure.core :as f]
+  (:require [failjure.core :as f]
             [cljs-http.client :as http]
             [cljs.core.async :refer [chan]]
-            [devneya.utils :refer [chan->promise ai-config]])
+            [devneya.utils :refer [chan->promise ai-config log-with-id]])
   (:require-macros [failjure.core]))
 
 (defn build-headers [openai-key]
@@ -19,14 +18,14 @@
   "Get api key, text of the message, role for the message, previous context and output channel ((chan) by default).\n
    Send request to ChatGPT.\n
    Return output channel with result."
-  ([openai-key text role context output-channel]
-   (timbre/info "get-chatgpt-api-response function started")
+  ([log-id openai-key text role context output-channel]
+   (log-with-id log-id "get-chatgpt-api-response function started")
    (http/post (:OPENAI-API-URL ai-config) {:headers (build-headers openai-key)
                                            :json-params (build-body role text context)
                                            :with-credentials? false
                                            :channel output-channel}))
-  ([openai-key text role context]
-   (get-chatgpt-api-async-response openai-key text role context (chan))))
+  ([log-id openai-key text role context]
+   (get-chatgpt-api-async-response log-id openai-key text role context (chan))))
 
 (defn test-post
   "testfunc"
