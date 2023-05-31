@@ -1,0 +1,38 @@
+;; shadow-cljs configuration
+{:source-paths
+ ["src/main"
+  "src/test"]
+
+ :dependencies [[reagent "1.2.0"]
+                [org.clojure/tools.cli "1.0.214"]
+                [com.taoensso/timbre "6.1.0"]
+                [clj-commons/clj-yaml "1.0.26"]
+                [failjure/failjure "2.2.0"]
+                [cljs-http "0.1.46"]
+                [lambdaisland/fetch "1.3.74"]]
+
+ :dev-http
+ {8020 "public"}
+
+ :builds
+ {:devneya-lib
+  {:target :esm
+   :output-dir "public/js"
+   :modules
+   {:api
+    {:entries [devneya.exec
+               devneya.gpt
+               devneya.prompt
+               devneya.codeGeneration
+               devneya.formatters
+               devneya.err
+               devneya.utils]
+     :exports {test devneya.gpt/test-post
+               makeChain devneya.prompt/make-prompt-promise}}}}
+  :devneya
+  {:target :browser
+   :output-dir "public/js"
+   :asset-path "/js"
+   :modules
+   {:main
+    {:init-fn devneya.react/run-react}}}}}

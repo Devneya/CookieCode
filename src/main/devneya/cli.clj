@@ -6,7 +6,8 @@
             [devneya.prompt :as prompt]
             [devneya.utils :as utils]
             [taoensso.timbre :as timbre]
-            [failjure.core :as f]))
+            [failjure.core :as f])
+  (:require-macros [failjure.core]))
 
 (defn usage
   "Composes the summary string"
@@ -77,3 +78,6 @@
             (exec/exec-code config))]
        (timbre/info "Code generated, no errors occured!")
        (f/when-failed [fail] (print (f/message fail)))))))
+
+(defn -main [& args]
+  (run-cli (utils/load-config) args))

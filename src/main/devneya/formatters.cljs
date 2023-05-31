@@ -1,0 +1,48 @@
+(ns devneya.formatters
+  (:require [failjure.core :as f]
+            [clojure.string :as clstr]
+            [taoensso.timbre :as timbre]
+            [devneya.utils :as utils])
+  (:require-macros [failjure.core]))
+
+(defn remove-triple-back-quote
+  "Removes triple back quote
+   ```(\\w+)?(\r)?\n matches line with opening triple back quote and language name
+   ([\\s\\S]+?) matches text between quotes (if exists)
+   (\r)?\n``` line with closing triple back quote"
+  ([merge stri]
+   (let [matched (re-seq #"(```(\w+)?(\r)?\n([\s\S]*?)(\r)?\n```)" stri)
+         index_of_block 4
+         blocks (map #(str (get %1 index_of_block) utils/endl) matched)
+         result (or (if (= matched nil) stri (reduce str blocks)) "")
+         result (clstr/replace result #"(```(\w+)?(\r)?\n```)" "")]
+     (if (= merge 1)
+       result
+       (if (> (count blocks) 1)
+         (f/fail "chatGPT splitted the code to multiple blocks, try to simplyfy your request")
+         result))))
+
+  ([merge logdata stri]
+   (timbre/info logdata)
+   (remove-triple-back-quote merge stri)))
+
+(defn remove-colors
+  [stri]
+  (timbre/info "remove-colors function started")
+  (clstr/replace stri #"\[([0,1,2,3,4,5,6,7,8,9]+)m"  ""))
+
+;; Huge problem with / and \, if there is a \, we need to parse them much more carefully or we can just ban them
+;; Maybe it's better to think, that output-path is just filename and it cant contain any \ or /
+(defn remove-user-path
+  "In that version output path should be just a file name"
+  [stri output-path]
+  (timbre/info "remove-user-path function started")
+  (let [output-with-underline (clstr/replace output-path #"." #(str "[_" (if (or (= %1 "\\") (= %1 "/")) "\\/" %1) "]")),
+        ;;regexp parsing: "at 'any part of path before output-path entrance' output-path :num1:num2"" num1 and num2 are string and character
+        re-bad-string (re-pattern (str "([\\s^]*)at ([_\\S]*)" output-with-underline "[_:]([_\\d]+)[_:]([_\\d]+)"))
+        ;;number of group in regexp that matches number of string where error starts
+        index-of-string-number 3,
+        ;;number of group in regexp that matches position in string where error starts
+        index-of-char-number 4]
+    ;; TODO: add correct '\r\n' or '\n' according to the platform  
+    (clstr/replace stri re-bad-string #(str " Error starts at string " (get %1 index-of-string-number) " char " (get %1 index-of-char-number)))))
