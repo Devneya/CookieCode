@@ -34,7 +34,7 @@
 
 (defn parse-response [response]
   (if (not= (:status response) ok-http-status)
-    (f/fail (str "Request failed with status: " (:status response) "and body: " (:body response)))
+    (f/fail (str "Request failed with status: " (:status response) " and body: " (:body response)))
     (get-in (:body response) [:choices 0 :message :content])))
 
 (defn generate-code-async

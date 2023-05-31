@@ -1,6 +1,5 @@
 (ns devneya.utils
-  (:require [clojure.string :as clstr]
-            [cljs.core.async :as async]))
+  (:require [cljs.core.async :refer [<! go]]))
 
 (def ok-http-status 200)
 
@@ -20,7 +19,7 @@
 (defn chan->promise [c]
   (js/Promise.
    (fn [resolve _]
-     (async/take c resolve))))
+     (go (resolve (<! c))))))
 
 ;; (defn index-of [e coll] (first (keep-indexed #(if (= e %2) %1) coll)))
 

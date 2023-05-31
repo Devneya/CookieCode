@@ -28,12 +28,16 @@
   ([openai-key text role context]
    (get-chatgpt-api-async-response openai-key text role context (chan))))
 
-(defn testfunc
+(defn test-post
   "testfunc"
   [openai-key prompt]
-  (chan->promise (http/post
-                  (:OPENAI-API-URL ai-config)
-                  {:headers (build-headers openai-key)
-                   :body (build-body "user" prompt (:INITIAL-CONTEXT ai-config))
-                   :content-type :json})))
-(:export testfunc)
+  (let [out (chan)]
+    (http/post 
+     (:OPENAI-API-URL ai-config) 
+     {:headers (build-headers openai-key)
+      :json-params (build-body "user" prompt (:INITIAL-CONTEXT ai-config))
+      :with-credentials? false
+      :channel out})
+    (chan->promise out))
+  )
+(:export test-post)
