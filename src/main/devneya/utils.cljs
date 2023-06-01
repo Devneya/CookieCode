@@ -22,13 +22,13 @@
   "Log data for specified log-id using logger function\n
    log-level-flags:
    0 - error
-   1+ - custom"
+   1 - info"
   ([log-level-flag log-id log-string]
   (cond 
     (= log-level-flag 0) (timbre/error(str log-id " " log-string))
-    :else  (timbre/info (str log-id " " log-string))))
+    :else  (timbre/info (str log-id " | " log-string))))
   ([log-id log-string]
-   (timbre/info (str log-id " " log-string))))
+   (log-with-id 1 log-id log-string)))
 
 (defn chan->promise 
   "Get channel. \n

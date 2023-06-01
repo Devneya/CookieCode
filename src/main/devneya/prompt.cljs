@@ -4,7 +4,7 @@
             [failjure.core :as f]
             [cljs.core.async :refer [chan <! >!]]
             [devneya.prompt :as prompt]
-            [devneya.utils :refer [chan->promise log-with-id]])
+            [devneya.utils :refer [chan->promise log-with-id date-hms]])
   (:require-macros [failjure.core]
                    [cljs.core.async.macros :refer [go]]))
 
@@ -67,7 +67,9 @@
    (make-initial-prompt log-id openai-key prompt)))
 
 (defn make-prompt-promise
-  [log-id openai-key attempt-limit prompt]
-  (chan->promise (make-prompt-chain log-id openai-key attempt-limit prompt)))
+  ([log-id openai-key attempt-limit prompt]
+   (chan->promise (make-prompt-chain log-id openai-key attempt-limit prompt)))
+  ([openai-key attempt-limit prompt]
+   (chan->promise (make-prompt-chain (date-hms) openai-key attempt-limit prompt))))
 
 (:export make-prompt-promise)
