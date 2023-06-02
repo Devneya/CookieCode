@@ -1,60 +1,63 @@
 # Devneya
 
-FIXME: description
+## Library Documentation
 
-## Installation
+### Introduction
+The library provides functionality for generating code using the `makeChain` function. This documentation will guide you through the process of using the library effectively.
 
-```
-$ git clone https://github.com/get-zen-dev/Devneya.git
-```
+### Installation
+To use the library, you need to include the necessary files in your project:
 
-#### Config file example:
-```~/.config/devneya/keys.yml```
-```
-OPENAI_KEY: OPENAI_KEY
-DENO_DEPLOY_TOKEN: DENO_TOKEN
-DENO_PROJECT: PROJECT_NAME
-REQUEST_LOG_PATH: "LOG_PATH"
-MAX_REPS: 3
-CODE_FILENAME: CODE.js ("./code-path/code.js" by default)
-DENO_ERROR_FILENAME: ERROR_FILENAME ("deno_error.txt" by default)
-```
+1. Download the library files.
+2. Copy the file to your project's `public/js` directory.
 
-#### start.sh example: 
+### Usage
+To utilize the library's `makeChain` function, follow these steps:
 
-```
-#!/bin/sh
-export OPENAI_KEY="OPENAI-KEY"
-export DENO_DEPLOY_TOKEN="DENO-TOKEN"
-export DENO_PROJECT="PROJECT-NAME"
-export REQUEST_LOG_PATH=""
-export MAX_REPS=3
+1. Import the `makeChain` function into your JavaScript file:
+```javascript
+import {makeChain} from './public/js/api.js';
 ```
 
-## Usage
-Create config file or use `source ./start.sh`
-
-```
-$ bb devneya [flags] prompt
-```
-
-Start a webserver:
-
-```
-lein deps ;; optional
-lein run
+2. Set up the necessary HTML elements in your document. For example, if you have a form with an input field for an API key, another input field for a prompt, and a submit button, your HTML could look like this:
+```html
+<form id="submit-form">
+    <input type="text" id="api-key" placeholder="Enter API key" />
+    <input type="text" id="prompt" placeholder="Enter prompt" />
+    <button type="submit">Submit</button>
+</form>
 ```
 
-## Options
-```
-"-g" "--[no-]gen" "Generate the code" :default true
-"-x" "--[no-]exec" "Execute the code" :default false
-"-a" "--all" "Repeat code generation and execution" :default false
-"-h" "--help"
-```
+3. Add an event listener to the form's submit event. Inside the event listener, call the `makeChain` function and handle the response. Here's an example:
+```javascript
+const formSubmit = document.getElementById('submit-form');
+const response = document.getElementById('response');
 
-## Examples
+formSubmit.addEventListener("submit", function(event){
+    response.value = "";
+    event.preventDefault();
+
+    let apiKey = document.getElementById("api-key").value;
+    let prompt = document.getElementById("prompt").value;
+
+    (async () => {
+        let data = await makeChain(apiKey, 3, prompt);
+        let res = JSON.parse(JSON.stringify(data));
+        response.value = res;
+    })();
+});
 ```
-bb devneya prompt
-bb devneya -a prompt 
+In the above example, the `makeChain` function is called with the API key, number of regenerating attempts, and prompt provided as arguments. The resulting data is then assigned to the `response` element's value.
+
+4. (Optional) If you have a button that toggles the visibility of the form, you can add an event listener to handle the toggle functionality. For example:
+```javascript
+const buttonPopup = document.getElementsByClassName('show-form');
+
+buttonPopup[0].addEventListener("click", function(event){
+    formSubmit.classList.toggle("active");
+});
 ```
+In this case, the first element with the class name `show-form` is selected, and when clicked, the `active` class is toggled on the `formSubmit` element.
+
+### Conclusion
+By following the steps outlined in this documentation, you can effectively use the library's `makeChain` function to generate code. Remember to import the library, set up the necessary HTML elements, and handle the form submission and toggle functionality if required.
