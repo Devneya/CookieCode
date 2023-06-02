@@ -1,4 +1,3 @@
-import {test} from './public/js/api.js';
 import {makeChain} from './public/js/api.js';
 
 const formSubmit = document.getElementById('submit-form')
@@ -14,10 +13,8 @@ formSubmit.addEventListener("submit", function(event){
     let prompt = document.getElementById("prompt").value;
 
     (async () => {
-        // let data = await test(apiKey, prompt)
         let data = await makeChain(apiKey, 3, prompt)
         let res = JSON.parse(JSON.stringify(data))
-        console.log(res)
         response.value = res
     })();
 

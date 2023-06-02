@@ -73,6 +73,7 @@ textarea {
   border-radius: 4px;
   resize: vertical;
   margin-bottom: 20px;
+  height: fit-content;
 }
 textarea#prompt {
   padding: 14px 10px 5px 10px;
