@@ -1,4 +1,4 @@
-import {makeChain} from './public/js/api.js';
+import {generateCode} from './lib/api.js';
 
 const formSubmit = document.getElementById('submit-form')
 
@@ -13,7 +13,7 @@ formSubmit.addEventListener("submit", function(event){
     let prompt = document.getElementById("prompt").value;
 
     (async () => {
-        let data = await makeChain(apiKey, 3, prompt)
+        let data = await generateCode(apiKey, 3, prompt)
         let res = JSON.parse(JSON.stringify(data))
         response.value = res
     })();

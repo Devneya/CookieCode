@@ -17,7 +17,7 @@
  :builds
  {:devneya-lib
   {:target :esm
-   :output-dir "public/js"
+   :output-dir "lib"
    :modules
    {:api
     {:entries [devneya.exec
@@ -28,7 +28,7 @@
                devneya.err
                devneya.utils]
      :exports {test devneya.gpt/test-post
-               makeChain devneya.prompt/make-prompt-promise}}}}
+               generateCode devneya.prompt/make-prompt-promise}}}}
   :devneya
   {:target :browser
    :output-dir "public/js"
