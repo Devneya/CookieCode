@@ -9,11 +9,13 @@
                    [cljs.core.async.macros :refer [go]]))
 
 (defn make-initial-prompt
-  [log-id openai-key prompt]
+  ([log-id openai-key prompt]
   (log-with-id log-id "Making initial prompt")
   (gen/generate-code-async log-id
                            openai-key
                            (str "Write only code. Do not use ```. " prompt)))
+  ([openai-key prompt]
+   (make-initial-prompt (date-hms) openai-key prompt)))
 
 (defn make-fix-prompt
   "Get api key, generated code, its execution error and attempt number.\n
@@ -72,4 +74,9 @@
   ([openai-key attempt-limit prompt]
    (chan->promise (make-prompt-chain (date-hms) openai-key attempt-limit prompt))))
 
+(defn make-request 
+[openai-key prompt]
+  (chan->promise (make-initial-prompt openai-key prompt)))
+
 (:export make-prompt-promise)
+(:export make-request)

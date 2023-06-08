@@ -28,7 +28,8 @@
                devneya.err
                devneya.utils]
      :exports {test devneya.gpt/test-post
-               generateCode devneya.prompt/make-prompt-promise}}}}
+               generateCode devneya.prompt/make-prompt-promise
+               getCode devneya.prompt/make-request}}}}
   :devneya
   {:target :browser
    :output-dir "public/js"
