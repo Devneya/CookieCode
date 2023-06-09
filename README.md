@@ -16,7 +16,7 @@ To utilize the library's `generateCode` function, follow these steps:
 
 1. Import the `generateCode` function into your JavaScript file:
 ```javascript
-import {generateCode} from './Devneya/lib/api.js';
+import {generateCode} from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/api.js';
 ```
 
 2. Set up the necessary HTML elements in your document. For example, if you have a form with an input field for an API key, another input field for a prompt, and a submit button, your HTML could look like this:

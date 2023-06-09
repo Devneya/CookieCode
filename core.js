@@ -1,4 +1,4 @@
-import {generateCode} from './lib/api.js';
+import {generateCode} from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/api.js';
 
 const formSubmit = document.getElementById('submit-form')
 
