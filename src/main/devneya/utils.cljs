@@ -1,6 +1,7 @@
 (ns devneya.utils
   (:require [taoensso.timbre :as timbre]
-            [cljs.core.async :refer [<! go]]))
+            [cljs.core.async :refer [<! go]]
+            [failjure.core :as f]))
 
 (def ok-http-status 200)
 
@@ -36,4 +37,4 @@
   [c] 
   (js/Promise.
    (fn [resolve _]
-     (go (resolve (<! c))))))
+     (go (resolve (f/attempt f/message (<! c)))))))
