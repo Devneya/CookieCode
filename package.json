@@ -9,15 +9,24 @@
   },
   "name": "devneya",
   "description": "FIXME: description",
-  "version": "1.0.0",
-  "main": "core.js",
+  "version": "1.2.1",
+  "main": "./assets/js/devneya.js",
   "directories": {
-    "doc": "doc"
+    "doc": "doc",
+    "lib": "lib"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "get-zen-dev",
+  "license": "SEE LICENSE IN ./LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/get-zen-dev/Devneya.git"
+  },
+  "bugs": {
+    "url": "https://github.com/get-zen-dev/Devneya/issues"
+  },
+  "homepage": "https://github.com/get-zen-dev/Devneya#readme"
 }

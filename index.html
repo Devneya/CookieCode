@@ -1,29 +1,14 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <title>Submit Form</title>
-  <script type="module" defer src="./core.js"></script>
-  <link rel="stylesheet" href="./style.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./assets/css/devneya-style.css">
 </head>
-
 <body>
-  <div class="wrapper">
-    <form id="submit-form">
-      <label for="api-key">API Key:</label>
-      <input type="text" id="api-key" name="api-key" placeholder="Your API Key" required>
-
-      <label for="prompt">Prompt:</label>
-      <textarea id="prompt" name="prompt" placeholder="Your prompt"  required></textarea>
-
-      <button type="submit">Submit</button>
-      <textarea name="response" id="response" cols="30" rows="10"></textarea>
-    </form>
-
-    <div class="show-form">
-      Click me!
-    </div>
-  </div>
+    <button id="js-devneya-popup-button">Devneya</button>
+    <script src="./assets/js/devneya.js" type="module" id="js-devneya-script"></script>
 </body>
-
 </html>

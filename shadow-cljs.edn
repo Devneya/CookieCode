@@ -20,20 +20,12 @@
    :output-dir "lib"
    :modules
    {:api
-    {:entries [devneya.exec
+    {:entries [devneya.codeGeneration
+               devneya.err
+               devneya.exec
+               devneya.formatters
                devneya.gpt
                devneya.prompt
-               devneya.codeGeneration
-               devneya.formatters
-               devneya.err
-               devneya.utils]
-     :exports {test devneya.gpt/test-post
-               generateCode devneya.prompt/make-prompt-promise
-               getCode devneya.prompt/make-request}}}}
-  :devneya
-  {:target :browser
-   :output-dir "public/js"
-   :asset-path "/js"
-   :modules
-   {:main
-    {:init-fn devneya.react/run-react}}}}}
+               devneya.utils] 
+     :exports {generateCode devneya.prompt/make-prompt-promise
+               getCode devneya.prompt/make-request}}}}}}
