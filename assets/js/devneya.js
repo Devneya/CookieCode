@@ -16,13 +16,15 @@ class DevneyaForm {
             <label class="devneya-form-label" for="devneya-form-prompt">
                 Prompt:
             </label>
-            <textarea id="devneya-form-prompt" name="devneya-form-prompt" placeholder="Your prompt" cols="30" rows="10"
-                required></textarea>
+            <textarea id="devneya-form-prompt" name="devneya-form-prompt" placeholder="Your prompt" required></textarea>
     
             <button id="devneya-form-button" type="submit">
                 Submit
             </button>
-            <textarea id="devneya-form-response" name="devneya-form-response" cols="30" rows="10"></textarea>
+            <textarea id="devneya-form-response" name="devneya-form-response"></textarea>
+            <button id="devneya-copy-button" type="button">
+                Copy
+            </button>
             `
         );
         document.body.insertBefore(this.form, document.getElementById("js-devneya-script"));
@@ -59,3 +61,6 @@ devneyaForm.form.addEventListener("submit", function (event) {
 
 document.getElementById("js-devneya-popup-button").addEventListener("click", function(){devneyaForm.open()})
 document.getElementById("devneya-close").addEventListener("click", function(){devneyaForm.close()})
+document.getElementById("devneya-copy-button").addEventListener("click", function(){
+    window.navigator.clipboard.writeText(response.value)
+})
