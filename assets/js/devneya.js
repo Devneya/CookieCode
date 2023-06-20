@@ -4,30 +4,30 @@ class DevneyaForm {
     constructor() {
         this.isOpen = false;
         this.form = document.createElement("form");
-        this.form.id = "devneya-form";
+        this.form.className = "devneya-form";
         this.form.insertAdjacentHTML(
             "afterbegin",
             `
-            <div id="devneya-close" unselectable="on">+</div>
-            <label class="devneya-form-label" for="devneya-form-api-key">
+            <div class="devneya-form__close-button" unselectable="on">+</div>
+            <label class="devneya-form__label" for="devneya-form-api-key">
                 API Key:
             </label>
-            <input type="text" id="devneya-form-api-key" name="devneya-form-api-key" placeholder="Your API Key" required />
-            <label class="devneya-form-label" for="devneya-form-prompt">
+            <input type="text" class="devneya-form__api-key" name="devneya-form__api-key" placeholder="API Key" required />
+            <label class="devneya-form__label" for="devneya-form__prompt">
                 Prompt:
             </label>
-            <textarea id="devneya-form-prompt" name="devneya-form-prompt" placeholder="Your prompt" required></textarea>
+            <textarea class="devneya-form__prompt" name="devneya-form__prompt" placeholder="Prompt" required></textarea>
     
-            <button id="devneya-form-button" type="submit">
+            <button class="devneya-form__submit-button devneya-form__button" type="submit">
                 Submit
             </button>
-            <textarea id="devneya-form-response" name="devneya-form-response"></textarea>
-            <button id="devneya-copy-button" type="button">
+            <textarea class="devneya-form__response" name="devneya-form__response"></textarea>
+            <button class="devneya-form__copy-button devneya-form__button" type="button">
                 Copy
             </button>
             `
         );
-        document.body.insertBefore(this.form, document.getElementById("js-devneya-script"));
+        document.body.insertBefore(this.form, document.querySelector(".js-devneya-script"));
     }
     open() {
         if (!this.form.isOpen) {        
@@ -45,22 +45,23 @@ class DevneyaForm {
 
 const devneyaForm = new DevneyaForm();
 
-const response = document.getElementById("devneya-form-response");
+const response = document.querySelector(".devneya-form__response");
+const apiKey = document.querySelector(".devneya-form__api-key");
+const prompt = document.querySelector(".devneya-form__prompt");  
 
 devneyaForm.form.addEventListener("submit", function (event) {
-    let apiKey = document.getElementById("devneya-form-api-key").value;
-    let prompt = document.getElementById("devneya-form-prompt").value;  
+    
     event.preventDefault();
     response.value = "";
     (async () => {
-        let data = await generateCode(apiKey, 3, prompt)
+        let data = await generateCode(apiKey.value, 3, prompt.value)
         let res = JSON.parse(JSON.stringify(data))
         response.value = res
     })();
 })
 
-document.getElementById("js-devneya-popup-button").addEventListener("click", function(){devneyaForm.open()})
-document.getElementById("devneya-close").addEventListener("click", function(){devneyaForm.close()})
-document.getElementById("devneya-copy-button").addEventListener("click", function(){
+document.querySelector(".js-devneya-popup-button").addEventListener("click", function(){devneyaForm.open()})
+document.querySelector(".devneya-form__close-button").addEventListener("click", function(){devneyaForm.close()})
+document.querySelector(".devneya-form__copy-button").addEventListener("click", function(){
     window.navigator.clipboard.writeText(response.value)
 })
