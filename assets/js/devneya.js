@@ -28,6 +28,9 @@ class DevneyaForm {
             `
         );
         document.body.insertBefore(this.form, document.querySelector(".js-devneya-script"));
+        for (let filename of ["https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/execWorker.js", "https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/shared.js"]) {
+            document.body.appendChild(this.createScript(filename))
+        }
     }
     open() {
         if (!this.form.isOpen) {        
@@ -40,6 +43,13 @@ class DevneyaForm {
     close() {
         this.form.classList.remove("active");
         this.form.isOpen = false
+    }
+    
+    createScript(filename) {
+        let el = document.createElement("script");
+        el.src = filename
+        el.type="module"
+        return el
     }
 }
 
