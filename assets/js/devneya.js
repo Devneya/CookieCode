@@ -1,13 +1,13 @@
-import { generateCode } from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/api.js';
+import { generateCode } from "/lib/api.js";
 
 class DevneyaForm {
-    constructor() {
-        this.isOpen = false;
-        this.form = document.createElement("form");
-        this.form.className = "devneya-form";
-        this.form.insertAdjacentHTML(
-            "afterbegin",
-            `
+  constructor() {
+    this.isOpen = false;
+    this.form = document.createElement("form");
+    this.form.className = "devneya-form";
+    this.form.insertAdjacentHTML(
+      "afterbegin",
+      `
             <div class="devneya-form__close-button" unselectable="on">+</div>
             <label class="devneya-form__label" for="devneya-form-api-key">
                 API Key:
@@ -26,52 +26,64 @@ class DevneyaForm {
                 Copy
             </button>
             `
-        );
-        document.body.insertBefore(this.form, document.querySelector(".js-devneya-script"));
-        for (let filename of ["https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/execWorker.js", "https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/shared.js"]) {
-            document.body.appendChild(this.createScript(filename))
-        }
+    );
+    document.body.insertBefore(
+      this.form,
+      document.querySelector(".js-devneya-script")
+    );
+    for (let filename of ["./lib/execWorker.js", "./lib/shared.js"]) {
+      document.body.appendChild(this.createScript(filename));
     }
-    open() {
-        if (!this.form.isOpen) {        
-            this.form.classList.add("active");
-            this.form.isOpen = true
-        } else {
-            this.close()
-        }
+  }
+  open() {
+    if (!this.form.isOpen) {
+      this.form.classList.add("active");
+      this.form.isOpen = true;
+    } else {
+      this.close();
     }
-    close() {
-        this.form.classList.remove("active");
-        this.form.isOpen = false
-    }
-    
-    createScript(filename) {
-        let el = document.createElement("script");
-        el.src = filename
-        el.type="module"
-        return el
-    }
+  }
+  close() {
+    this.form.classList.remove("active");
+    this.form.isOpen = false;
+  }
+
+  createScript(filename) {
+    let el = document.createElement("script");
+    el.type = "module";
+    el.src = filename;
+    return el;
+  }
 }
 
 const devneyaForm = new DevneyaForm();
 
 const response = document.querySelector(".devneya-form__response");
 const apiKey = document.querySelector(".devneya-form__api-key");
-const prompt = document.querySelector(".devneya-form__prompt");  
+const prompt = document.querySelector(".devneya-form__prompt");
 
 devneyaForm.form.addEventListener("submit", function (event) {
-    
-    event.preventDefault();
-    response.value = "";
-    (async () => {
-        let data = await generateCode(apiKey.value, 3, prompt.value)
-        let res = JSON.parse(JSON.stringify(data))
-        response.value = res
-    })();
-})
+  event.preventDefault();
+  response.value = "";
+  (async () => {
+    let data = await generateCode(apiKey.value, 3, prompt.value);
+    let res = JSON.parse(JSON.stringify(data));
+    response.value = res;
+  })();
+});
 
-document.querySelector(".js-devneya-popup-button").addEventListener("click", function(){devneyaForm.open()})
-document.querySelector(".devneya-form__close-button").addEventListener("click", function(){devneyaForm.close()})
-document.querySelector(".devneya-form__copy-button").addEventListener("click", function(){
-    window.navigator.clipboard.writeText(response.value)
-})
+document
+  .querySelector(".js-devneya-popup-button")
+  .addEventListener("click", function () {
+    devneyaForm.open();
+  });
+document
+  .querySelector(".devneya-form__close-button")
+  .addEventListener("click", function () {
+    devneyaForm.close();
+  });
+document
+  .querySelector(".devneya-form__copy-button")
+  .addEventListener("click", function () {
+    window.navigator.clipboard.writeText(response.value);
+  });
