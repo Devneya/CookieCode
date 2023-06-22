@@ -1,4 +1,4 @@
-import { generateCode } from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@main/lib/api.js';
+import { generateCode } from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@latest/lib/api.js';
 
 class DevneyaForm {
     constructor() {
