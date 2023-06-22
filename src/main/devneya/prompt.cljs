@@ -42,7 +42,8 @@
           [result (<! generated-code-channel)]
           (>! out-chan result)
           (f/if-let-failed?
-           [exec-result (<! (exec/exec-code log-id result))]
+          ;;  [exec-result (<! (exec/exec-code log-id result))] temporary comment for developing web workers in another branch
+           [exec-result (exec/exec-code log-id result)]
            (do (log-with-id log-id (str "Evaluation failed on attempt " attempt "! Retrying..."))
                (>! out-chan (if (< attempt attempt-limit)
                               (<! (make-fix-prompt-chain

@@ -1,4 +1,4 @@
-import { generateCode } from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/api.js';
+import { generateCode } from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@main/lib/api.js';
 
 class DevneyaForm {
     constructor() {
@@ -28,9 +28,9 @@ class DevneyaForm {
             `
         );
         document.body.insertBefore(this.form, document.querySelector(".js-devneya-script"));
-        for (let filename of ["https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/execWorker.js", "https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@master/lib/shared.js"]) {
-            document.body.appendChild(this.createScript(filename))
-        }
+        // for (let filename of ["https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@main/lib/execWorker.js", "https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@main/lib/shared.js"]) {
+        //     document.body.appendChild(this.createScript(filename))
+        // }
     }
     open() {
         if (!this.form.isOpen) {        

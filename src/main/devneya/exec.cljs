@@ -7,26 +7,35 @@
 
 (def execution-timeout 1000)
 
+;; (defn exec-code
+;;   "Get code to execute.\n
+;;    Execute it with js/eval\n
+;;    Return execution result or fail with compile error, if occurs."
+;;   [log-id code]
+;;   (log-with-id log-id "Evaluation started")
+;;   (let [result-channel (chan 1)
+;;         executed (atom false)
+;;         worker (js/Worker. "./lib/execWorker.js")]
+
+;;     (.postMessage worker code)
+;;     (go (set!
+;;          (.-onmessage worker)
+;;          (fn [result]
+;;            (>! result-channel result)
+;;            (reset! executed true))))
+;;     (go (<! (timeout execution-timeout))
+;;         (log-with-id log-id "timeout passed")
+;;         (when (not executed)
+;;           (.terminate worker)
+;;           (log-with-id log-id "worker teriminated")
+;;           (>! result-channel (f/fail (str "Execution takes more then " execution-timeout " milliseconds.")))))
+;;     result-channel))
+
+
 (defn exec-code
   "Get code to execute.\n
    Execute it with js/eval\n
    Return execution result or fail with compile error, if occurs."
   [log-id code]
   (log-with-id log-id "Evaluation started")
-  (let [result-channel (chan 1)
-        executed (atom false)
-        worker (js/Worker. "./lib/execWorker.js")]
-
-    (.postMessage worker code)
-    (go (set!
-         (.-onmessage worker)
-         (fn [result]
-           (>! result-channel result)
-           (reset! executed true))))
-    (go (<! (timeout execution-timeout))
-        (log-with-id log-id "timeout passed")
-        (when (not executed)
-          (.terminate worker)
-          (log-with-id log-id "worker teriminated")
-          (>! result-channel (f/fail (str "Execution takes more then " execution-timeout " milliseconds.")))))
-    result-channel))
+  (f/try* (js/eval code)))
