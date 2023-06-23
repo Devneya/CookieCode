@@ -3,14 +3,14 @@
   box-sizing: border-box;
   border: none;
   height: 30px;
-  width: 100px;
+  width: fit-content;
   text-align: center;
-  padding: 8px 0;
+  padding: 8px 20px;
   margin: 0 auto;
   font-size: 14px;
   text-transform: uppercase;
   background-color: #4caf50;
-  border-radius: 8px;
+  border-radius: 15px;
   color: #fff;
   cursor: pointer;
 }
