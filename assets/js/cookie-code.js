@@ -23,7 +23,7 @@ class CookieCodeForm {
             </button>
             <textarea class="cookie-code-form__response" name="cookie-code-form__response"></textarea>
             <button class="cookie-code-form__copy-button cookie-code-form__button" type="button">
-                Copy
+                Copy & Close
             </button>
             `
         );
@@ -73,5 +73,9 @@ cookieCodeForm.form.addEventListener("submit", function (event) {
 document.querySelector(".js-cookie-code-popup-button").addEventListener("click", function(){cookieCodeForm.open()})
 document.querySelector(".cookie-code-form__close-button").addEventListener("click", function(){cookieCodeForm.close()})
 document.querySelector(".cookie-code-form__copy-button").addEventListener("click", function(){
-    window.navigator.clipboard.writeText(response.value)
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(response.value);
+    } else {
+        console.error(`Unable to copy the response to clipboard\n navigator.clipboard is ${navigator.clipboard}`)}
+    cookieCodeForm.close()
 })
