@@ -26,6 +26,7 @@
   display: none;
   position: relative;
   font-family: sans-serif;
+  z-index: 10;
 }
 
 .cookie-code-form.active {
