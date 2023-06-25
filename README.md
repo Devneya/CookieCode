@@ -3,6 +3,10 @@
 ## Introduction
 This project is a web interface based on the Devneya library, which is specifically designed for code generation. The purpose of this project is to provide a user-friendly platform that allows users to generate code snippets or blocks based on their specific requirements. The implementation includes a cookie code functionality, which dynamically adds a form to the HTML page for user interaction.
 
+Here is an example of the service integration at <a href="https://get-zen-dev.github.io/jsden/" rel="nofollow">jsden.dev</a> playground:
+
+![screen-gif](./binSearchRec.gif)
+
 ## Getting Started
 To use the Cookie Code functionality in your project, follow the steps below:
 
