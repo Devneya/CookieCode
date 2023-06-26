@@ -1,0 +1,54 @@
+/* main part */
+.cookie-code-form {
+  width: 400px;
+  background-color: #fff;
+  position: relative;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 450px;
+  gap: 20px;
+}
+
+.cookie-code-form__button {
+  box-sizing: border-box;
+  border: none;
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  margin: 0 auto;
+  font-size: 14px;
+  text-transform: uppercase;
+  background-color: #4caf50;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+}
+
+#dcookie-code-form__button:hover {
+  background-color: #317433;
+}
+
+.cookie-code-form__label {
+  display: block;
+  color: #333;
+}
+
+.cookie-code-form__prompt,
+.cookie-code-form__response,
+.cookie-code-form__api-key {
+  width: -webkit-fill-available;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.cookie-code-form__response {
+  height: 30em;
+}
+
+.cookie-code-form__prompt {
+  height: 15em;
+}

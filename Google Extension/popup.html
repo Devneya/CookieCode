@@ -4,22 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fortune Cookies</title>
-    <link rel="stylesheet" href="./popup.css">
+    <title>Cookie Code</title>
+    <link rel="stylesheet" href="/assets/css/cookie-code-style.css">
 </head>
 
 <body>
-    <form id="submit-form">
-        <label for="api-key">API Key:</label>
-        <input type="text" id="api-key" name="api-key" placeholder="Your API Key" required>
+    <form class="cookie-code-form">
+        <label class="cookie-code-form__label" for="cookie-code-form-api-key">
+            API Key:
+        </label>
+        <input type="text" class="cookie-code-form__api-key" name="cookie-code-form__api-key" placeholder="API Key" required />
+        <label class="cookie-code-form__label" for="cookie-code-form__prompt">
+            Prompt:
+        </label>
+        <textarea class="cookie-code-form__prompt" name="cookie-code-form__prompt" placeholder="Prompt" required></textarea>
 
-        <label for="prompt">Prompt:</label>
-        <textarea id="prompt" name="prompt" placeholder="Your prompt" required></textarea>
-
-        <button type="submit">Submit</button>
-        <textarea name="response" id="response" cols="30" rows="10"></textarea>
+        <button class="cookie-code-form__submit-button cookie-code-form__button" type="submit">
+            Submit
+        </button>
+        <textarea class="cookie-code-form__response" name="cookie-code-form__response"></textarea>
+        <button class="cookie-code-form__copy-button cookie-code-form__button" type="button">
+            Copy
+        </button>
     </form>
-    <script src="./popup.js" type="module"></script>
+    <script src="/assets/js/cookie-code.js" type="module"></script>
 </body>
 
 </html>
