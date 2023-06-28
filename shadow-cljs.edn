@@ -28,7 +28,13 @@
                devneya.prompt
                devneya.utils]
      :exports {generateCode devneya.prompt/make-prompt-promise
-               getCode devneya.prompt/make-request}}}}}}
+               getCode devneya.prompt/make-request}}}}
+  
+  :test
+  {:target    :node-test
+   :output-to "src/test/devneya/testData/tests.js"
+   :ns-regexp "Test$"
+   :autorun   true}}}
 
 ;; shadow-cljs configuration
 ;; {:source-paths
