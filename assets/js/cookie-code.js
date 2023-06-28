@@ -1,4 +1,4 @@
-import { generateCode } from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@latest/lib/api.js';
+import { generateCode } from 'https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya-CookieCode@latest/lib/api.js';
 
 class CookieCodeForm {
     constructor() {
@@ -28,7 +28,7 @@ class CookieCodeForm {
             `
         );
         document.body.insertBefore(this.form, document.querySelector(".js-cookie-code-script"));
-        // for (let filename of ["https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@main/lib/execWorker.js", "https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@main/lib/shared.js"]) {
+        // for (let filename of ["https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya-CookieCode@main/lib/execWorker.js", "https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya-CookieCode@main/lib/shared.js"]) {
         //     document.body.appendChild(this.createScript(filename))
         // }
     }

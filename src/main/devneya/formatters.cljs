@@ -13,15 +13,6 @@
    (log-with-id log-id "remove-triple-back-quote function started")
    (let [matched (re-seq #"(```(\w+)?(\r)?\n([\s\S]*?)(\r)?\n```)" stri)
          index_of_block 4
-        ;;  Maybe \n is not fully correct here, need to test this or if some problem occure the following code might be used
-         
-        ;;  (ns my-app.core
-        ;;    (:require [goog.userAgent.platform :as platform]))
-
-        ;;  (defn get-newline-symbol []
-        ;;    (cond
-        ;;      (= platform/WINDOWS) "\r\n"
-        ;;      :else "\n"))
          blocks (map #(str (get %1 index_of_block) "\n") matched)
          result (or (if (= matched nil) stri (reduce str blocks)) "")
          result (clstr/replace result #"(```(\w+)?(\r)?\n```)" "")]

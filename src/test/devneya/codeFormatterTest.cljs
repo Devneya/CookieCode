@@ -1,5 +1,5 @@
 (ns devneya.codeFormatterTest
-  (:require [cljs.test :refer-macros [deftest is testing run-tests]]
+  (:require [cljs.test :refer-macros [deftest is testing]]
             [devneya.formatters :as formatter]
             [failjure.core :as f]
             [devneya.testUtils :refer [local-slurp]]))
