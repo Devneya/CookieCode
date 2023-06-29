@@ -1,4 +1,4 @@
-(ns devneya.codeFormatterTest
+(ns devneya.formattersTest
   (:require [cljs.test :refer-macros [deftest is testing]]
             [devneya.formatters :as formatter]
             [failjure.core :as f]

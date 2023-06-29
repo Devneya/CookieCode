@@ -18,3 +18,8 @@ config.yml
 start.sh
 deno_error.txt
 .shadow-cljs/
+src/test/devneya/testData/tests.js
+package-lock.json
+/public
+/node_modules
+/lib/cljs-runtime
