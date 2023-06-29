@@ -40,7 +40,6 @@
    (fn [resolve _]
      (go (resolve (f/attempt f/message (<! c)))))))
 
-
 (defn classes-of
   "Get the classes of an element as a Clojure keyword vector."
   [e]
@@ -84,3 +83,10 @@
     (if (.contains el-classList toggled-class)
       (.remove el-classList toggled-class)
       (.add el-classList toggled-class))))
+
+(defn get-element-by-class-name
+  "Get the first DOM element with *class-name* class"
+  [class-name]
+  (-> js/document
+      (.getElementsByClassName class-name)
+      (.item 0)))
