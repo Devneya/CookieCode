@@ -1,16 +1,20 @@
 (ns devneya.codeGenerationTest
-  (:require [cljs.test :refer-macros [deftest is testing]]
+  (:require [cljs.test :refer-macros [deftest is testing async]]
             [devneya.prompt :as prompt]
             [failjure.core :as f]
-            [devneya.gpt :as gpt]
-            [cljs.core.async :refer [go >! <! chan]]))
+            [cljs.core.async :refer [go >! <!]]
+            [devneya.utils :refer [ok-http-status]]))
+
+(defn build-correct-plain-request [req]
+  {:status ok-http-status :body {:choices [{:message {:content req}}]}})
 
 (def hello-world-returner
   (let [n (atom 0)]
     (with-meta
       (fn [log-id openai-key text role context output-channel]
         (swap! n inc)
-        (go (>! output-channel "console.log(\"Hello, world!\");")))
+        (go (>! output-channel (build-correct-plain-request "console.log(\"Hello, world!\");")))
+        output-channel)
       {::call-count (fn [] @n)})))
 
 (def wrong-returner
@@ -18,18 +22,24 @@
     (with-meta
       (fn [log-id openai-key text role context output-channel]
         (swap! n inc)
-        (go (>! output-channel "There is no code!")))
+        (go (>! output-channel (build-correct-plain-request "There is no code!")))
+        output-channel)
       {::call-count (fn [] @n)})))
 
-(deftest make-prompt-chain-test
+(deftest make-correct-prompt-test
   (testing "Got correct code from the first call."
-    (with-redefs [gpt/get-chatgpt-api-async-response hello-world-returner]
-      (go (let [res (<! (prompt/make-prompt-chain "" "" 3 ""))]
-            (is (= res "console.log(\"Hello, world!\");")))
-          (is (= ((::call-count (meta hello-world-returner))) 1)))))
+    (let [res-chan (prompt/make-prompt-chain "" hello-world-returner "" 3 "")]
+      (async done
+             (go
+               (is (= (<! res-chan) "console.log(\"Hello, world!\");"))
+               (is (= ((::call-count (meta hello-world-returner))) 1))
+               (done))))))
   
+(deftest make-incorrect-prompt-test
   (testing "Never got correct code."
-    (with-redefs [gpt/get-chatgpt-api-async-response wrong-returner]
-      (go (let [res (<! (prompt/make-prompt-chain "" "" 3 ""))]
-            (is (f/failed? res)))
-          (is (= ((::call-count (meta wrong-returner))) 3))))))
+    (let [res-chan (prompt/make-prompt-chain "" wrong-returner "" 3 "")]
+      (async done
+             (go
+               (is (f/failed? (<! res-chan)))
+               (is (= ((::call-count (meta wrong-returner))) 3))
+               (done))))))

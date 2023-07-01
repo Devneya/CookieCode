@@ -6,10 +6,10 @@
 
 (def ok-http-status 200)
 
-(def ai-config {:OPENAI-API-URL "https://api.openai.com/v1/chat/completions" 
-                :OPENAI-MODEL "gpt-3.5-turbo" 
-                :TEMPERATURE 0.3
-                :INITIAL-CONTEXT [{:role    "system"
+(def ai-config {:openai-api-url "https://api.openai.com/v1/chat/completions" 
+                :openai-model "gpt-3.5-turbo" 
+                :temperature 0.3
+                :initilal-context [{:role    "system"
                                    :content (str "You are a system that only generates code in JavaScript.\n"
                                                  "Do not describe or contextualize the code.\n"
                                                  "Do not apply any formatting or syntax highlighting.\n"

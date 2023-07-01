@@ -10,8 +10,8 @@
    "Authorization" (str "Bearer " openai-key)})
 
 (defn build-body [role text context]
-  {:model (:OPENAI-MODEL ai-config)
-   :temperature (:TEMPERATURE ai-config)
+  {:model (:openai-model ai-config)
+   :temperature (:temperature ai-config)
    :messages (concat context [{:role role :content text}])})
 
 (defn get-chatgpt-api-async-response
@@ -20,7 +20,7 @@
    Return output channel with result."
   ([log-id openai-key text role context output-channel]
    (log-with-id log-id "get-chatgpt-api-response function started")
-   (http/post (:OPENAI-API-URL ai-config) {:headers (build-headers openai-key)
+   (http/post (:openai-api-url ai-config) {:headers (build-headers openai-key)
                                            :json-params (build-body role text context)
                                            :with-credentials? false
                                            :channel output-channel}))
@@ -32,9 +32,9 @@
   [openai-key prompt]
   (let [out (chan)]
     (http/post 
-     (:OPENAI-API-URL ai-config) 
+     (:openai-api-url ai-config) 
      {:headers (build-headers openai-key)
-      :json-params (build-body "user" prompt (:INITIAL-CONTEXT ai-config))
+      :json-params (build-body "user" prompt (:initilal-context ai-config))
       :with-credentials? false
       :channel out})
     (chan->promise out))
