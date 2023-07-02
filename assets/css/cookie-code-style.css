@@ -1,5 +1,5 @@
 /* cookie-code popup button */
-.js-cookie-code-popup-button {
+.cookie-code-popup-button {
   box-sizing: border-box;
   border: none;
   height: 30px;
@@ -13,6 +13,16 @@
   border-radius: 15px;
   color: #fff;
   cursor: pointer;
+}
+
+.cookie-code-container {
+  position: absolute;
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto;
+  top: 20px;
+  left: 0;
+  right: 0;
 }
 
 /* main part */

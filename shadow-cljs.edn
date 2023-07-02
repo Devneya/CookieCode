@@ -34,10 +34,18 @@
   
   :cookie-code
   {:target :browser
+   :output-dir "./assets/js"
+   :asset-path "/js"
+   :modules
+   {:cookie-code
+    {:init-fn devneya.cookieCode/render-cookie-code}}}
+  
+  :cookie-code-dev
+  {:target :browser
    :output-dir "public/js"
    :asset-path "/js"
    :modules
-   {:main
+   {:cookie-code
     {:init-fn devneya.cookieCode/render-cookie-code}}}
   
   :test

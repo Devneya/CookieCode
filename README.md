@@ -10,10 +10,12 @@ Here is an example of the service integration at <a href="https://get-zen-dev.gi
 ## Getting Started
 To use the Cookie Code functionality in your project, follow the steps below:
 
-1. Include the following code to the <body> in your HTML file:
+1. Include the following code to your your HTML file:
    ```html
-    <button class="js-cookie-code-popup-button">Cookie Code</button>
-    <script src="https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@latest/assets/js/cookie-code.js" type="module" class="js-cookie-code-script"></script>
+    <div class="cookie-code-container"></div>
+    <button class="cookie-code-popup-button">Cookie Code</button>
+    <script src="https://cdn.jsdelivr.net/gh/get-zen-dev/Devneya@latest/assets/js/cookie-code.js"></script>
+
    ```
 2. Include the CSS file <head> in your HTML file: 
     ```html
@@ -24,5 +26,5 @@ To use the Cookie Code functionality in your project, follow the steps below:
 ## Usage
 Once the Cookie Code implementation is added to your HTML file, the following behavior will occur:
 
-- A button with the class `"js-cookie-code-popup-button"` will be displayed on the page.
+- A button with the class `"cookie-code-popup-button"` will be displayed on the page.
 - When you click on the button, a form will be displayed that will allow you to send a request and copy the received code.
