@@ -38,7 +38,7 @@
    :asset-path "/js"
    :modules
    {:cookie-code
-    {:init-fn devneya.cookieCode/render-cookie-code}}}
+    {:init-fn devneya.cookieCodeRender/render-cookie-code}}}
   
   :cookie-code-dev
   {:target :browser
@@ -46,7 +46,7 @@
    :asset-path "/js"
    :modules
    {:cookie-code
-    {:init-fn devneya.cookieCode/render-cookie-code}}}
+    {:init-fn devneya.cookieCodeRender/render-cookie-code}}}
   
   :test
   {:target    :node-test
