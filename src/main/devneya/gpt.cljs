@@ -1,7 +1,7 @@
 (ns devneya.gpt
   (:require [failjure.core :as f]
             [cljs-http.client :as http]
-            [cljs.core.async :refer [chan]]
+            [cljs.core.async :refer [go chan >!]]
             [devneya.utils :refer [chan->promise ai-config log-with-id]])
   (:require-macros [failjure.core]))
 
@@ -20,10 +20,13 @@
    Return output channel with result."
   ([log-id openai-key text role context output-channel]
    (log-with-id log-id "get-chatgpt-api-response function started")
-   (http/post (:openai-api-url ai-config) {:headers (build-headers openai-key)
-                                           :json-params (build-body role text context)
-                                           :with-credentials? false
-                                           :channel output-channel}))
+   (if (some #(<= (int %) 127) (seq openai-key))
+     (go (>! output-channel (f/fail "Non-ascii character in security key.")))
+     (http/post (:openai-api-url ai-config) {:headers (build-headers openai-key)
+                                             :json-params (build-body role text context)
+                                             :with-credentials? false
+                                             :channel output-channel}))
+   output-channel)
   ([log-id openai-key text role context]
    (get-chatgpt-api-async-response log-id openai-key text role context (chan))))
 
