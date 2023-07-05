@@ -31,6 +31,12 @@
 ;;           (>! result-channel (f/fail (str "Execution takes more then " execution-timeout " milliseconds.")))))
 ;;     result-channel))
 
+(def ok-exec-result "")
+
+(defn assert-nil [exec-result]
+  (if (not exec-result)
+    ok-exec-result
+    exec-result))
 
 (defn exec-code
   "Get code to execute.\n
@@ -38,4 +44,6 @@
    Return execution result or fail with compile error, if occurs."
   [log-id code]
   (log-with-id log-id "Evaluation started")
-  (f/try* (js/eval code)))
+  (let [exec-chan (chan)]
+    (go (>! exec-chan (assert-nil (f/try* (js/eval code)))))
+    exec-chan))

@@ -23,44 +23,44 @@
   "Get api key, generated code, its execution error and attempt number.\n
    Make generate code request to fix.\n
    Return async channel with fixed code or with fail."
-  [log-id make-api-request security-key generated-code exec-error attempt]
+  [log-id make-api-request security-key generated-code check-error attempt]
   (log-with-id log-id (str "Making fix prompt number " attempt))
   (gen/generate-code-async log-id
                            make-api-request
                            security-key
                            (str "Here is a code:\n"
                                 generated-code
-                                "\nAn error occurred while executing this code:\n"
-                                exec-error
+                                "\nThere is problem with this code:\n"
+                                check-error
                                 "\nRewrite code to fix it. Write only code. Do not use ```.")))
 
 (defn make-fix-prompt-chain
   "Get api key, request attempt limit, current code generation channel and attempt number.\n
    Make fix prompt chain: try to execute current code and send fix prompt, if needed, *MAX_REPS* times.\n
    Return async channel with fail if couldn't fix the code and if it occured on some generation request, or fixed code otherwise."
-  ([log-id make-api-request security-key attempt-limit generated-code-channel attempt]
+  ([log-id make-api-request security-key attempt-limit check-code generated-code-channel attempt]
    (log-with-id log-id "Fix prompt chain started")
    (let [out-chan (chan)]
-     (go (f/if-let-failed?
-          [result (<! generated-code-channel)]
-          (>! out-chan result)
-          (f/if-let-failed?
-          ;;  [exec-result (<! (exec/exec-code log-id result))] temporary comment for developing web workers in another branch
-           [exec-result (exec/exec-code log-id result)]
-           (do (log-with-id log-id (str "Evaluation failed on attempt " attempt "! Retrying..."))
-               (>! out-chan (if (< attempt attempt-limit)
+     (go (>! out-chan (f/if-let-failed?
+                       [generated-code-or-fail (<! generated-code-channel)]
+                       generated-code-or-fail
+                       (f/if-let-failed?
+                        [check-result (<! (check-code log-id generated-code-or-fail))]
+                        (do (log-with-id log-id (str "Code check failed on attempt " attempt "! Retrying..."))
+                            (if (< attempt attempt-limit)
                               (<! (make-fix-prompt-chain
                                    log-id
                                    make-api-request
                                    security-key
                                    attempt-limit
-                                   (make-fix-prompt log-id make-api-request security-key result exec-result attempt)
+                                   check-code
+                                   (make-fix-prompt log-id make-api-request security-key generated-code-or-fail check-result attempt)
                                    (inc attempt)))
-                              (f/fail "Couldn't generate working code for the given request.\n"))))
-           (>! out-chan result))))
+                              (f/fail "Couldn't generate working code for the given request.\n")))
+                        generated-code-or-fail))))
      out-chan))
-  ([log-id make-api-request openai-key attempt-limit generated-code-channel]
-   (make-fix-prompt-chain log-id make-api-request openai-key attempt-limit generated-code-channel 1)))
+  ([log-id make-api-request security-key attempt-limit generated-code-channel]
+   (make-fix-prompt-chain log-id make-api-request security-key attempt-limit exec/exec-code generated-code-channel 1)))
 
 (defn make-prompt-chain
   "Get api key, request attempt limit and prompt.\n
