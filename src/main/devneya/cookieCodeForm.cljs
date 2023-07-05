@@ -23,13 +23,13 @@
                                                                                             @prompt)))]
                                                          (log-with-id current-time (str "returned on click to react: " resp))
                                                          (reset! response resp))))}
-       [:div {:class ["cookie-code-form__close-button"]  :unselectable "on"} "+"]
+       [:div {:class ["cookie-code-form__close"]  :unselectable "on"} "+"]
        [:label {:class "cookie-code-form__label" :for "cookie-code-form-api-key"} "API Key:"]
        [:input {:type "text" :class "cookie-code-form__api-key" :name "cookie-code-form__api-key" :placeholder "API Key" :required true :value @openai-key :on-change #(reset! openai-key (-> % .-target .-value))}]
        [:label {:class "cookie-code-form__label" :for "cookie-code-form__prompt"} "Prompt:"]
        [:textarea {:class "cookie-code-form__prompt" :name "cookie-code-form__prompt" :placeholder "Prompt" :required true :value @prompt :on-change #(reset! prompt (-> % .-target .-value))}]
-       [:button {:class "cookie-code-form__submit-button cookie-code-form__button" :type "submit"} "Submit"]
+       [:button {:class "cookie-code-form__submit-button cookie-code-btn" :type "submit"} "Submit"]
        [:textarea {:class "cookie-code-form__response" :name "cookie-code-form__response" :type "response" :value @response :on-change #(reset! response (-> % .-target .-value))}]
-       [:button {:class "cookie-code-form__copy-button cookie-code-form__button" :type "button"} "Copy & Close"]])))
+       [:button {:class "cookie-code-form__copy-button cookie-code-btn" :type "button"} "Copy & Close"]])))
 
 

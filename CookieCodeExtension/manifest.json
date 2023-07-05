@@ -3,8 +3,13 @@
     "name": "Cookie Code",
     "description": "Code generation tool basen on Devneya library",
     "version": "0.0.1",
-    "action": {
-        "default_popup": "/popup.html",
-        "default_icon": "/assets/img/devneya-logo.png"
-    }
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["assets/js/cookie-code.js"],
+            "css": ["assets/css/cookie-code-style.css"],
+            "run_at": "document_end"
+        }
+    ],
+    "host_permissions": ["<all_urls>"]
 }
