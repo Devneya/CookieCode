@@ -63,7 +63,7 @@
      (str "Response:\n" parsed-response "\n"))))
 
 (defn log-request
-  "Get previous role and text of new request and previous context.\n
+  "Get role and text of new request and previous context.\n
    Build logging function, which later can be used as transducer."
   [text role context]
   (fn [parsed-response]
@@ -80,8 +80,9 @@
     (get-in (:body response) [:choices 0 :message :content])))
 
 (defn generate-code
-  "Get api key, text of the code request, data for logging and the previous context and function to make request.\n
-   Make request to ChatGPT with output to channel with builded transducer for parsing result. \n
+  "Get api key, code language name and text of request.\n
+   Make request to ChatGPT with output to channel with builded transducer for parsing result 
+   and with initial context with given language name. \n
    Return async channel with text of ChatGPT API response or fail, if occurs."
   ([openai-key language-name code-request]
    (let [context ((:initilal-context openai-config) language-name)]
@@ -103,8 +104,8 @@
                   (str "Write only code. Do not use ```. " code-request))))
 
 (defn fix-request
-  "Get api key, generated code, its execution error and attempt number.\n
-   Make generate code request to fix.\n
+  "Get api key, code language name, generated code, and it's check error.\n
+   Make generate code request to ChatGPT to fix it.\n
    Return async channel with fixed code or with fail."
   [openai-key language-name generated-code check-error]
   (log/info (str "Making fix prompt."))

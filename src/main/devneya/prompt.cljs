@@ -11,9 +11,9 @@
   (:refer-clojure :exclude [parse-double]))
 
 (defn make-fix-prompt-chain
-  "Get api key, request attempt limit, current code generation channel and attempt number.\n
-   Make fix prompt chain: try to execute current code and send fix prompt, if needed, *MAX_REPS* times.\n
-   Return async channel with fail if couldn't fix the code and if it occured on some generation request, or fixed code otherwise."
+  "Get the way to make fix request, code check method, request attempt limit, channel with generated code or fail and current attempt.\n
+   Make fix prompt chain: try to execute current code and send fix prompt, if check isn't passed, max *attempt-limit* times.\n
+   Return async channel with fail if couldn't generate checked code and if it occured on some generation request, or fixed code otherwise."
   ([make-fix-request make-code-check attempt-limit generated-code-channel attempt]
    (log/info "Fix prompt chain started.")
    (let [out-chan (chan)]
@@ -39,9 +39,13 @@
    (make-fix-prompt-chain make-fix-request any? attempt-limit generated-code-channel 1)))
 
 (defn make-prompt-chain
-  "Get api key, request attempt limit and prompt.\n
+  "Get generation model api (function, which get request text and make initial generation request, 
+   and function, which get generated code and error and make fix request), 
+   language description (name and check method, which code should pass to be correct), 
+   request attempt limit and text of the request.\n
+   By default language is set to JavaScript with evaluation and model is set to ChatGPT.
    Make prompt chain: one initial prompt, then start fix prompt chain.\n
-   Return async channel with fail, if couldn't generate working code and if it occured on some prompt or with working code."
+   Return async channel with fail, if couldn't generate checked code and if it occured on some prompt, or with working code."
   ([make-initial-generation-request make-fix-request language-name make-code-check attempt-limit code-request]
    (make-fix-prompt-chain
     make-fix-request
