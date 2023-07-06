@@ -51,6 +51,14 @@
    {:cookie-code
     {:init-fn devneya.cookieCodeRender/render-cookie-code}}}
   
+  :cookie-code-chrome-extension
+  {:target :browser
+   :output-dir "CookieCodeExtension/assets/js"
+   :asset-path "/js"
+   :modules
+   {:cookie-code
+    {:init-fn devneya.cookieCodeExtension/cookie-code-extension}}}
+  
   :test
   {:target    :node-test
    :output-to "src/test/devneya/testData/tests.js"
