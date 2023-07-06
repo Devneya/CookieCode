@@ -6,7 +6,7 @@
 
 (deftest get-chatgpt-api-async-response-test
   (testing "Non-ascii character in security key."
-    (let [res-chan (gpt/get-chatgpt-api-async-response "" "русский текст" "" "" [])]
+    (let [res-chan (gpt/get-chatgpt-api-response "русский текст" "" "" [])]
       (async done
              (go (is (= (f/fail "Non-ascii character in security key.") (<! res-chan))))
              (done)))))

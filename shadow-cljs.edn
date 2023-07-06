@@ -20,6 +20,7 @@
  {:devneya-lib
   {:target :esm
    :output-dir "lib"
+   :compiler-options {:warnings {:redef false}}
    :modules
    {:api
     {:entries [devneya.codeGeneration
@@ -36,6 +37,7 @@
   {:target :browser
    :output-dir "./assets/js"
    :asset-path "/js"
+   :compiler-options {:warnings {:redef false}}
    :modules
    {:cookie-code
     {:init-fn devneya.cookieCodeRender/render-cookie-code}}}
@@ -44,6 +46,7 @@
   {:target :browser
    :output-dir "public/js"
    :asset-path "/js"
+   :compiler-options {:warnings {:redef false}}
    :modules
    {:cookie-code
     {:init-fn devneya.cookieCodeRender/render-cookie-code}}}
@@ -52,6 +55,7 @@
   {:target    :node-test
    :output-to "src/test/devneya/testData/tests.js"
    :ns-regexp "Test$"
+   :compiler-options {:warnings {:redef false}}
    :autorun   true}}}
 
 ;; shadow-cljs configuration

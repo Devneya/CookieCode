@@ -1,7 +1,7 @@
 (ns devneya.cookieCodeForm
   (:require [cljs.core.async :refer [<!]]
             [devneya.prompt :as prompt]
-            [devneya.utils :refer [date-hms log-with-id]]
+            [taoensso.timbre :as log]
             [failjure.core :as f]
             [reagent.core :as r]
             [reagent.dom :as rdom])
@@ -15,13 +15,11 @@
       [:form {:class "cookie-code-form" :on-submit (fn [e]
                                                      (.preventDefault e)
                                                      (go
-                                                       (let [current-time (date-hms)
-                                                             resp (f/attempt f/message (<! (prompt/make-prompt-chain
-                                                                                            current-time
+                                                       (let [resp (f/attempt f/message (<! (prompt/make-prompt-chain 
                                                                                             @openai-key
                                                                                             3
                                                                                             @prompt)))]
-                                                         (log-with-id current-time (str "returned on click to react: " resp))
+                                                         (log/info (str "returned on click to react: " resp))
                                                          (reset! response resp))))}
        [:div {:class ["cookie-code-form__close-button"]  :unselectable "on"} "+"]
        [:label {:class "cookie-code-form__label" :for "cookie-code-form-api-key"} "API Key:"]
