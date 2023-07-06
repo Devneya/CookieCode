@@ -1,5 +1,6 @@
 (ns devneya.promptTest
-  (:require [cljs.test :refer-macros [deftest is testing async]]
+  (:require [devneya.exec :as exec]
+            [cljs.test :refer-macros [deftest is testing async]]
             [devneya.prompt :as prompt]
             [failjure.core :as f]
             [cljs.core.async :refer [go >! <! chan]]))
@@ -29,6 +30,8 @@
     (let [res-chan (prompt/make-prompt-chain 
                     hello-world-returner 
                     (fn [code error] (hello-world-returner code))
+                    "JavaScript"
+                    exec/exec-code
                     3
                     "")]
       (async done
@@ -42,6 +45,8 @@
     (let [res-chan (prompt/make-prompt-chain
                     wrong-returner
                     (fn [code error] (wrong-returner code))
+                    "JavaScript"
+                    exec/exec-code
                     3
                     "")]
       (async done

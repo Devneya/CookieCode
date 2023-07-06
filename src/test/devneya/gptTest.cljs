@@ -4,7 +4,7 @@
             [failjure.core :as f]
             [cljs.core.async :refer [go <!]]))
 
-(deftest get-chatgpt-api-async-response-test
+(deftest get-chatgpt-api-response-test
   (testing "Non-ascii character in security key."
     (let [res-chan (gpt/get-chatgpt-api-response "русский текст" "" "" [])]
       (async done

@@ -11,11 +11,12 @@
 (def openai-config {:openai-api-url "https://api.openai.com/v1/chat/completions"
                     :openai-model "gpt-3.5-turbo"
                     :temperature 0.3
-                    :initilal-context [{:role    "system"
-                                        :content (str "You are a system that only generates code in JavaScript.\n"
-                                                      "Do not describe or contextualize the code.\n"
-                                                      "Do not apply any formatting or syntax highlighting.\n"
-                                                      "Do not wrap the code in a code block.")}]})
+                    :initilal-context (fn [language-name]
+                                        [{:role    "system"
+                                          :content (str "You are a system that only generates code in " language-name ".\n"
+                                                        "Do not describe or contextualize the code.\n"
+                                                        "Do not apply any formatting or syntax highlighting.\n"
+                                                        "Do not wrap the code in a code block.")}])})
 
 (defn build-headers [openai-key]
   {"Content-Type" "application/json"
@@ -32,7 +33,7 @@
    Return output channel with result."
   ([openai-key text role context output-channel]
    (log/info "Making a request to ChatGPT.")
-   (if (some #(> (int %) 127) (seq openai-key))
+   (if (some #(> (.charCodeAt % 0) 127) (seq openai-key))
      (go (>! output-channel (f/fail "Non-ascii character in security key.")))
      (http/post (:openai-api-url openai-config) {:headers (build-headers openai-key)
                                                  :json-params (build-body role text context)
@@ -82,35 +83,33 @@
   "Get api key, text of the code request, data for logging and the previous context and function to make request.\n
    Make request to ChatGPT with output to channel with builded transducer for parsing result. \n
    Return async channel with text of ChatGPT API response or fail, if occurs."
-  ([openai-key code-request context]
-   (get-chatgpt-api-response
-    openai-key
-    code-request
-    "user"
-    context
-    (chan 1 (map (comp
-                  (partial map-not-fail (partial format/remove-triple-back-quote 0))
-                  (partial map-not-fail (log-request code-request "user" context))
-                  (partial map-not-fail parse-response))))))
-  ([openai-key code-request]
-   (generate-code
-    openai-key
-    code-request
-    (:initilal-context openai-config))))
+  ([openai-key language-name code-request]
+   (let [context ((:initilal-context openai-config) language-name)]
+     (get-chatgpt-api-response
+      openai-key
+      code-request
+      "user"
+      context
+      (chan 1 (map (comp
+                    (partial map-not-fail (partial format/remove-triple-back-quote 0))
+                    (partial map-not-fail (log-request code-request "user" context))
+                    (partial map-not-fail parse-response))))))))
 
 (defn initial-request
-  ([openai-key code-request]
+  ([openai-key language-name code-request]
    (log/info "Making initial prompt with ChatGPT.")
    (generate-code openai-key
+                  language-name
                   (str "Write only code. Do not use ```. " code-request))))
 
 (defn fix-request
   "Get api key, generated code, its execution error and attempt number.\n
    Make generate code request to fix.\n
    Return async channel with fixed code or with fail."
-  [openai-key generated-code check-error]
+  [openai-key language-name generated-code check-error]
   (log/info (str "Making fix prompt."))
   (generate-code openai-key
+                 language-name
                  (str "Here is a code:\n"
                       generated-code
                       "\nThere is problem with this code:\n"
