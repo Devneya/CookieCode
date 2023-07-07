@@ -5,12 +5,10 @@
 
 (defn add-popup-toggle-class-listener []
   (let [cookie-code-form (get-element-by-class-name "cookie-code-form")
-        cookie-code-popup-button (get-element-by-class-name "cookie-code-popup-button")
         cookie-code-form__close (get-element-by-class-name "cookie-code-form__close")
         cookie-code-form__copy-button (get-element-by-class-name "cookie-code-form__copy-button")]
-    (for [x [cookie-code-form cookie-code-popup-button cookie-code-form__close cookie-code-form__copy-button]]
-      (js/console.log x))
-    (.addEventListener cookie-code-popup-button "click" #(toggle-class cookie-code-form "active"))
+        
+    (.addEventListener (.querySelector js/document "body") "click" (fn [e] (when (boolean (re-find #"cookie-code-popup-button" (. (. e -target) -className))) (toggle-class cookie-code-form "active"))))
     (.addEventListener cookie-code-form__close "click" #(toggle-class cookie-code-form "active"))
     (.addEventListener cookie-code-form__copy-button "click" #((. (. js/navigator -clipboard) writeText (.-value (get-element-by-class-name "cookie-code-form__response")))
                                                                (toggle-class cookie-code-form "active")))))

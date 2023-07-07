@@ -5,9 +5,9 @@
     "version": "0.0.1",
     "content_scripts": [
         {
-            "matches": ["https://*.windmill.dev/scripts/*"],
+            "matches": ["https://*.windmill.dev/*"],
             "js": ["assets/js/cookie-code.js"],
-            "css": ["assets/css/cookie-code-style.css"]
+            "css": ["assets/css/cookie-code-style.css", "assets/css/windmill-cookie-code-style.css"]
         }
     ],
     "host_permissions": ["<all_urls>"]

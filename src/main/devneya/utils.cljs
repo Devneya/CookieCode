@@ -21,7 +21,6 @@
 (defn get-element-by-class-name
   "Get the first DOM element with *class-name* class"
   [class-name]
-  (js/console.log (.item (.getElementsByClassName js/document class-name) 0))
   (-> js/document
       (.getElementsByClassName class-name)
       (.item 0)))
