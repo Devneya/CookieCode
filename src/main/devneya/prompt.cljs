@@ -70,8 +70,23 @@
     code-request)))
 
 (defn make-prompt-promise
-  [openai-key attempt-limit code-request]
-  (chan->promise (make-prompt-chain openai-key attempt-limit code-request)))
+  ([make-initial-generation-request make-fix-request language-name make-code-check attempt-limit code-request]
+   (chan->promise (make-prompt-chain
+                   make-initial-generation-request
+                   make-fix-request
+                   language-name
+                   make-code-check
+                   attempt-limit
+                   code-request)))
+  ([openai-key language-name make-code-check attempt-limit code-request]
+   (chan->promise (make-prompt-chain
+                   openai-key
+                   language-name
+                   make-code-check
+                   attempt-limit
+                   code-request)))
+  ([openai-key attempt-limit code-request]
+   (chan->promise (make-prompt-chain openai-key attempt-limit code-request))))
 
 (defn make-js-request
   [openai-key code-request]
