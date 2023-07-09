@@ -1,6 +1,6 @@
 (ns devneya.cookieCodeForm
   (:require [cljs.core.async :refer [<!]]
-            [devneya.prompt :as prompt]
+            [devneya.prompt :refer [generate-code]]
             [taoensso.timbre :as log]
             [failjure.core :as f]
             [reagent.core :as r]
@@ -21,7 +21,7 @@
        [:button {:class "cookie-code-form__submit-button cookie-code-btn" :on-click (fn [e]
                                                                                       (.preventDefault e)
                                                                                       (go
-                                                                                        (let [resp (f/attempt f/message (<! (prompt/make-prompt-chain
+                                                                                        (let [resp (f/attempt f/message (<! (generate-code
                                                                                                                              @openai-key
                                                                                                                              3
                                                                                                                              @prompt)))]

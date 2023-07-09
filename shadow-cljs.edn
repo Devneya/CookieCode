@@ -30,7 +30,7 @@
                devneya.gpt
                devneya.prompt
                devneya.utils]
-     :exports {generateCode devneya.prompt/make-prompt-promise
+     :exports {generateCode devneya.prompt/generate-code-promise
                getCode devneya.prompt/make-js-request}}}}
   
   :cookie-code

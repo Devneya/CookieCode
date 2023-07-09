@@ -5,7 +5,8 @@
             [devneya.utils :refer [ok-http-status chan->promise]]
             [devneya.err :refer [map-not-fail]]
             [devneya.formatters :as format]
-            [taoensso.timbre :as log])
+            [taoensso.timbre :as log]
+            [devneya.promptSpec :refer [Icode-generator]])
   (:require-macros [failjure.core]))
 
 (def openai-config {:openai-api-url "https://api.openai.com/v1/chat/completions"
@@ -96,26 +97,25 @@
                     (partial map-not-fail (log-request code-request "user" context))
                     (partial map-not-fail parse-response))))))))
 
-(defn initial-request
-  ([openai-key language-name code-request]
-   (log/info "Making initial prompt with ChatGPT.")
-   (generate-code openai-key
-                  language-name
-                  (str "Write only code. Do not use ```. " code-request))))
-
-(defn fix-request
-  "Get api key, code language name, generated code, and it's check error.\n
-   Make generate code request to ChatGPT to fix it.\n
-   Return async channel with fixed code or with fail."
-  [openai-key language-name generated-code check-error]
-  (log/info (str "Making fix prompt."))
-  (generate-code openai-key
-                 language-name
-                 (str "Here is a code:\n"
-                      generated-code
-                      "\nThere is problem with this code:\n"
-                      check-error
-                      "\nRewrite code to fix it. Write only code. Do not use ```.")))
+(defn gpt-generator-builder
+  [openai-key]
+  (reify Icode-generator
+    (request-initial
+      [_ language-name code-request]
+      (log/info "Making initial prompt with ChatGPT.")
+      (generate-code openai-key
+                     language-name
+                     (str "Write only code. Do not use ```. " code-request)))
+    (request-fix
+     [_ language-name generated-code check-error]
+     (log/info (str "Making fix prompt."))
+     (generate-code openai-key
+                    language-name
+                    (str "Here is a code:\n"
+                         generated-code
+                         "\nThere is problem with this code:\n"
+                         check-error
+                         "\nRewrite code to fix it. Write only code. Do not use ```.")))))
 
 (defn test-post
   "testfunc"

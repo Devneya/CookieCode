@@ -31,7 +31,7 @@
 ;;           (>! result-channel (f/fail (str "Execution takes more then " execution-timeout " milliseconds.")))))
 ;;     result-channel))
 
-(def ok-exec-result "")
+(def ok-exec-result true)
 
 (defn assert-nil [exec-result]
   (if (not exec-result)

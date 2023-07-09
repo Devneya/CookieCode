@@ -1,7 +1,7 @@
 (ns devneya.promptTest
-  (:require [devneya.exec :as exec]
-            [cljs.test :refer-macros [deftest is testing async]]
+  (:require [cljs.test :refer-macros [deftest is testing async]]
             [devneya.prompt :as prompt]
+            [devneya.promptSpec :as p-spec]
             [failjure.core :as f]
             [cljs.core.async :refer [go >! <! chan]]))
 
@@ -9,7 +9,7 @@
   (let [n (atom 0)
         output-channel (chan)]
     (with-meta
-      (fn [code-request]
+      (fn []
         (swap! n inc)
         (go (>! output-channel "console.log(\"Hello, world!\");"))
         output-channel)
@@ -19,7 +19,7 @@
   (let [n (atom 0)
         output-channel (chan)]
     (with-meta
-      (fn [code-request]
+      (fn []
         (swap! n inc)
         (go (>! output-channel "There is no code!"))
         output-channel)
@@ -27,11 +27,13 @@
 
 (deftest make-correct-prompt-test
   (testing "Got correct code from the first call."
-    (let [res-chan (prompt/make-prompt-chain 
-                    hello-world-returner 
-                    (fn [code error] (hello-world-returner code))
-                    "JavaScript"
-                    exec/exec-code
+    (let [res-chan (prompt/generate-code
+                    (reify p-spec/Icode-generator
+                      (request-initial [_ _ _]
+                        (hello-world-returner))
+                      (request-fix [_ _ _ _]
+                        (hello-world-returner)))
+                    p-spec/js-eval-description
                     3
                     "")]
       (async done
@@ -42,11 +44,13 @@
   
 (deftest make-incorrect-prompt-test
   (testing "Never got correct code."
-    (let [res-chan (prompt/make-prompt-chain
-                    wrong-returner
-                    (fn [code error] (wrong-returner code))
-                    "JavaScript"
-                    exec/exec-code
+    (let [res-chan (prompt/generate-code
+                    (reify p-spec/Icode-generator
+                      (request-initial [_ _ _]
+                        (wrong-returner))
+                      (request-fix [_ _ _ _]
+                        (wrong-returner)))
+                    p-spec/js-eval-description
                     3
                     "")]
       (async done
