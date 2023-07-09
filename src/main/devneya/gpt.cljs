@@ -116,6 +116,7 @@
                          "\nThere is problem with this code:\n"
                          check-error
                          "\nRewrite code to fix it. Write only code. Do not use ```.")))))
+(:export gpt-generator-builder)
 
 (defn test-post
   "testfunc"

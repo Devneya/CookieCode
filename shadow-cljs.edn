@@ -23,7 +23,7 @@
    :compiler-options {:warnings {:redef false}}
    :modules
    {:api
-    {:entries [devneya.codeGeneration
+    {:entries [devneya.promptSpec
                devneya.err
                devneya.exec
                devneya.formatters
@@ -31,7 +31,9 @@
                devneya.prompt
                devneya.utils]
      :exports {generateCode devneya.prompt/generate-code-promise
-               getCode devneya.prompt/make-js-request}}}}
+               getCode devneya.prompt/make-js-request
+               jsEvalDescription devneya.promptSpec/js-eval-description
+               GPTGeneratorBuilder devneya.gpt/gpt-generator-builder}}}}
   
   :cookie-code
   {:target :browser

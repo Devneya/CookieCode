@@ -62,7 +62,9 @@
 
 (defn generate-code-promise
   ([openai-key attempt-limit code-request]
-   (chan->promise (generate-code openai-key attempt-limit code-request))))
+   (chan->promise (generate-code openai-key attempt-limit code-request)))
+  ([code-generator code-language attempt-limit code-request]
+   (chan->promise (generate-code code-generator code-language attempt-limit code-request))))
 
 (defn make-js-request
   [openai-key code-request]
