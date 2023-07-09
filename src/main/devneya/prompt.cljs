@@ -47,12 +47,13 @@
    (let [language-description
          (if (spec/valid? p-spec/langauage-description-spec code-language)
            code-language
-           {:language-name code-language :code-check p-spec/no-check})]
+           {:name code-language :code-check p-spec/no-check})]
+     (log/info (str "Got language description: " language-description))
      (make-fix-prompt-chain
-      (partial p-spec/request-fix code-generator (:language-name language-description))
+      (partial p-spec/request-fix code-generator (:name language-description))
       (:code-check language-description)
       attempt-limit
-      (p-spec/request-initial code-generator (:language-name language-description) code-request))))
+      (p-spec/request-initial code-generator (:name language-description) code-request))))
   ([openai-key attempt-limit code-request]
    (generate-code
     (gpt-generator-builder openai-key)
