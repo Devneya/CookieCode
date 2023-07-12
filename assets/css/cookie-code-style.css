@@ -1,4 +1,4 @@
-button.cookie-code-btn{
+.cookie-code-btn{
   box-sizing: border-box;
   border: none;
   width: 100%;
@@ -68,9 +68,10 @@ button.cookie-code-btn{
   font-size: 28px;
   font-weight: 400;
   transform: rotate(45deg);
+  cursor: pointer;
 }
 
-.cookie-code-form__label {
+button.cookie-code-form__label {
   display: block;
   color: #333;
 }

@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Cookie Code",
-    "description": "Code generation tool basen on Devneya library",
+    "description": "Code generation tool based on Devneya library",
     "version": "0.0.1",
     "content_scripts": [
         {
@@ -10,5 +10,9 @@
             "css": ["assets/css/cookie-code-style.css", "assets/css/windmill-cookie-code-style.css"]
         }
     ],
+    "web_accessible_resources": [{
+        "matches": ["<all_urls>"],
+        "resources": ["assets/js/devneya.js"]
+      }],
     "host_permissions": ["<all_urls>"]
 }
