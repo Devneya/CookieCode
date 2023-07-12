@@ -19,16 +19,17 @@
  :builds
  {:devneya-lib
   {:target :esm
-   :output-dir "lib"
+   :output-dir "src/cookieCode"
    :compiler-options {:warnings {:redef false}}
    :modules
-   {:api
-    {:entries [devneya.promptSpec
+   {:devneya
+    {:entries [
                devneya.err
                devneya.exec
                devneya.formatters
                devneya.gpt
                devneya.prompt
+               devneya.promptSpec
                devneya.utils]
      :exports {generateCode devneya.prompt/generate-code-promise
                getCode devneya.prompt/make-js-request
