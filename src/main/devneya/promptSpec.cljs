@@ -1,7 +1,8 @@
 (ns devneya.promptSpec
   (:require [cljs.spec.alpha :as s]
             [devneya.exec :refer [exec-code]]
-            [cljs.core.async :refer [chan >!]]))
+            [cljs.core.async :refer [chan >!]])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defprotocol Icode-generator
   (request-initial 
@@ -17,7 +18,7 @@
 
 (defn no-check [_]
   (let [output-channel (chan)]
-    (>! output-channel true)
+    (go (>! output-channel true))
     output-channel))
 
 (def js-eval-description
