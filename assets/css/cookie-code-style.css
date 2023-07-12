@@ -51,7 +51,7 @@
 .cookie-code-form.active {
   display: flex;
   flex-direction: column;
-  height: 450px;
+  min-height: 450px;
   gap: 20px;
 }
 
@@ -89,7 +89,7 @@ button.cookie-code-form__label {
 }
 
 .cookie-code-form__response {
-  height: 30em;
+  min-height: 5em;
 }
 
 .cookie-code-form__prompt {
