@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Code</title>
+    <link rel="stylesheet" href="../css/cookie-code-form.css">
+</head>
+<body>
+    <div class="cookie-code-container">
+        <form class="cookie-code-form">
+            <div class="cookie-code-form__close">+</div>
+            <label for="" class="cookie-code-form__label" for="cookie-code-form__api-key">API Key:</label>
+            <input type="text" class="cookie-code-form__api-key" name="cookie-code-form__api-key" placeholder="API Key" required>
+            <label for="" class="cookie-code-form__label" for="cookie-code-form__prompt">Prompt:</label>
+            <textarea class="cookie-code-form__prompt" name="cookie-code-form__prompt" placeholder="Prompt" required></textarea>
+            <label for="cookie-code-form__languages-dropdown">Choose a language:</label> 
+            <select name="cookie-code-form__languages-dropdown" class="cookie-code-form__languages-dropdown"> 
+                <option value="JavaScript">JavaScript</option> 
+                <option value="TypeScript">TypeScript</option> 
+                <option value="Python">Python</option> 
+                <option value="Golang">Golang</option> 
+                <option value="Bash">Bash</option> 
+                <option value="PostgreSQL">PostgreSQL</option> 
+            </select>
+            <button class="cookie-code-form__submit-button cookie-code-btn">Submit</button>
+            <textarea class="cookie-code-form__response" name="cookie-code-form__response"></textarea>
+            <button class="cookie-code-form__copy-button cookie-code-btn" type="button">Copy & Close</button>
+        </form> 
+    </div>
+
+
+    <script src="../js/cookie-code-extension.js" type="module"></script>
+</body>
+</html>

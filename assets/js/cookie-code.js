@@ -8,11 +8,47 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { generateCode, GPTGeneratorBuilder } from "./devneya.js";
-class CookieCodeForm {
-    constructor(locatePopupButtonContainer) {
+export class CookieCodeForm {
+    constructor() {
         this.container = undefined;
+    }
+    changeCookieCodeFormVisibility() {
+        var _a, _b;
+        (_b = (_a = this.container) === null || _a === void 0 ? void 0 : _a.querySelector("div .cookie-code-form")) === null || _b === void 0 ? void 0 : _b.classList.toggle("active");
+    }
+    addListeners() {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        const apiKey = ((_a = this.container) === null || _a === void 0 ? void 0 : _a.querySelector(".cookie-code-form__api-key"));
+        const prompt = ((_b = this.container) === null || _b === void 0 ? void 0 : _b.querySelector(".cookie-code-form__prompt"));
+        const response = ((_c = this.container) === null || _c === void 0 ? void 0 : _c.querySelector(".cookie-code-form__response"));
+        const lang = ((_d = this.container) === null || _d === void 0 ? void 0 : _d.querySelector(".cookie-code-form__languages-dropdown"));
+        (_f = (_e = this.container) === null || _e === void 0 ? void 0 : _e.querySelector(".cookie-code-form__close")) === null || _f === void 0 ? void 0 : _f.addEventListener("click", () => this.changeCookieCodeFormVisibility());
+        (_h = (_g = this.container) === null || _g === void 0 ? void 0 : _g.querySelector(".cookie-code-form__copy-button")) === null || _h === void 0 ? void 0 : _h.addEventListener("click", () => {
+            navigator.clipboard.writeText(response.value);
+            this.changeCookieCodeFormVisibility();
+        });
+        (_k = (_j = this.container) === null || _j === void 0 ? void 0 : _j.querySelector(".cookie-code-form__submit-button")) === null || _k === void 0 ? void 0 : _k.addEventListener("click", function (event) {
+            response.value = "";
+            event.preventDefault();
+            (() => __awaiter(this, void 0, void 0, function* () {
+                let devneyaResponse = yield generateCode(GPTGeneratorBuilder(apiKey.value), lang.value, 3, prompt.value);
+                response.value = devneyaResponse;
+            }))();
+        });
+    }
+    defineFormContainer(className) {
+        this.container = document.querySelector(`.${className}`);
+    }
+    startCookieCoding() {
+        this.defineFormContainer("cookie-code-container");
+        this.addListeners();
+    }
+}
+export class CookieCodeFormInjections extends CookieCodeForm {
+    constructor(func) {
+        super();
         this.popupButton = undefined;
-        this.locatePopupButtonContainer = locatePopupButtonContainer;
+        this.locatePopupButtonContainer = func;
         this.formTemplate = `
         <form class="cookie-code-form">
             <div class="cookie-code-form__close">+</div>
@@ -34,10 +70,6 @@ class CookieCodeForm {
             <button class="cookie-code-form__copy-button cookie-code-btn" type="button">Copy & Close</button>
         </form>
         `;
-    }
-    changeCookieCodeFormVisibility() {
-        var _a, _b;
-        (_b = (_a = this.container) === null || _a === void 0 ? void 0 : _a.querySelector("div .cookie-code-form")) === null || _b === void 0 ? void 0 : _b.classList.toggle("active");
     }
     mutationCallback() {
         this.popupButtonContainer = this.locatePopupButtonContainer();
@@ -78,33 +110,10 @@ class CookieCodeForm {
         this.container.classList.add("cookie-code-container");
         document.body.appendChild(this.container);
     }
-    addListeners() {
-        var _a, _b, _c, _d, _e, _f;
-        const apiKey = (document.querySelector(".cookie-code-form__api-key"));
-        const prompt = (document.querySelector(".cookie-code-form__prompt"));
-        const response = (document.querySelector(".cookie-code-form__response"));
-        const lang = (document.querySelector(".cookie-code-form__languages-dropdown"));
-        (_b = (_a = this.container) === null || _a === void 0 ? void 0 : _a.querySelector(".cookie-code-form__close")) === null || _b === void 0 ? void 0 : _b.addEventListener("click", this.changeCookieCodeFormVisibility);
-        (_d = (_c = this.container) === null || _c === void 0 ? void 0 : _c.querySelector(".cookie-code-form__copy-button")) === null || _d === void 0 ? void 0 : _d.addEventListener("click", () => {
-            var _a;
-            navigator.clipboard.writeText(((_a = this.container) === null || _a === void 0 ? void 0 : _a.querySelector(".cookie-code-form__response")).value);
-            this.changeCookieCodeFormVisibility();
-        });
-        (_f = (_e = this.container) === null || _e === void 0 ? void 0 : _e.querySelector(".cookie-code-form__submit-button")) === null || _f === void 0 ? void 0 : _f.addEventListener("click", function (event) {
-            response.value = "";
-            event.preventDefault();
-            (() => __awaiter(this, void 0, void 0, function* () {
-                let devneyaResponse = yield generateCode(GPTGeneratorBuilder(apiKey.value), lang.value, 3, prompt.value);
-                response.value = devneyaResponse;
-            }))();
-        });
-    }
-    injectCookieCode() {
+    startCookieCoding() {
         this.renderFormContainer();
         this.injectFormInContainer(this.container);
         this.addListeners();
         this.injectPopupButton(this.mutationCallback);
     }
 }
-const form = new CookieCodeForm(function () { return document.body; });
-form.injectCookieCode();

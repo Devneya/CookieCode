@@ -1,0 +1,29 @@
+.cookie-code-container {
+    position: absolute;
+    margin: 0 auto;
+    top: 20px;
+    left: 0;
+    right: 0;
+  }
+
+.cookie-code-popup-button{
+    width: fit-content;
+  }
+
+
+.cookie-code-form {
+    display: none;
+    position: fixed;
+    margin: 10% auto;
+    z-index: 10;
+    box-shadow: 3px 6px 36px rgb(0 0 0 / 30%);
+
+
+}
+
+.cookie-code-form.active {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+}

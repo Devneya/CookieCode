@@ -3,11 +3,15 @@
     "name": "Cookie Code",
     "description": "Code generation tool based on Devneya library",
     "version": "0.0.1",
+    "action": {
+        "default_popup": "assets/html/popup.html",
+        "default_icon": "assets/img/devneya-logo.png"
+    },
     "content_scripts": [
         {
             "matches": ["https://*.windmill.dev/*"],
             "js": ["assets/js/cookie-code.js"],
-            "css": ["assets/css/cookie-code-style.css", "assets/css/windmill-cookie-code-style.css"]
+            "css": ["assets/css/cookie-code-form.css", "assets/css/cookie-code-popup.css", "assets/css/windmill-cookie-code-style.css"]
         }
     ],
     "web_accessible_resources": [{

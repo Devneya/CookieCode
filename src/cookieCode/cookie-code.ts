@@ -1,16 +1,104 @@
 import { generateCode, GPTGeneratorBuilder } from "./devneya.js";
 
-class CookieCodeForm {
+/*
+    <div class="cookie-code-container">
+        <form class="cookie-code-form">
+            <div class="cookie-code-form__close">+</div>
+            <label for="" class="cookie-code-form__label" for="cookie-code-form__api-key">API Key:</label>
+            <input type="text" class="cookie-code-form__api-key" name="cookie-code-form__api-key" placeholder="API Key" required>
+            <label for="" class="cookie-code-form__label" for="cookie-code-form__prompt">Prompt:</label>
+            <textarea class="cookie-code-form__prompt" name="cookie-code-form__prompt" placeholder="Prompt" required></textarea>
+            <label for="cookie-code-form__languages-dropdown">Choose a language:</label> 
+            <select name="cookie-code-form__languages-dropdown" class="cookie-code-form__languages-dropdown"> 
+                <option value="JavaScript">JavaScript</option> 
+                <option value="TypeScript">TypeScript</option> 
+                <option value="Python">Python</option> 
+                <option value="Golang">Golang</option> 
+                <option value="Bash">Bash</option> 
+                <option value="PostgreSQL">PostgreSQL</option> 
+            </select>
+            <button class="cookie-code-form__submit-button cookie-code-btn">Submit</button>
+            <textarea class="cookie-code-form__response" name="cookie-code-form__response"></textarea>
+            <button class="cookie-code-form__copy-button cookie-code-btn" type="button">Copy & Close</button>
+        </form> 
+    </div>
+*/
+
+
+export class CookieCodeForm{
     container: HTMLDivElement | undefined;
+    constructor() {
+        this.container = undefined;
+    }
+    changeCookieCodeFormVisibility() {
+        this.container
+            ?.querySelector("div .cookie-code-form")
+            ?.classList.toggle("active");
+    }
+
+    addListeners() {
+        const apiKey = <HTMLInputElement>(
+            this.container
+            ?.querySelector(".cookie-code-form__api-key")!
+        );
+        const prompt = <HTMLTextAreaElement>(
+            this.container
+            ?.querySelector(".cookie-code-form__prompt")!
+        );
+        const response = <HTMLSelectElement>(
+            this.container
+            ?.querySelector(".cookie-code-form__response")!
+        );
+        const lang = <HTMLTextAreaElement>(
+            this.container
+            ?.querySelector(".cookie-code-form__languages-dropdown")!
+        );
+        this.container
+            ?.querySelector(".cookie-code-form__close")
+            ?.addEventListener("click", () => this.changeCookieCodeFormVisibility());
+        this.container
+            ?.querySelector(".cookie-code-form__copy-button")
+            ?.addEventListener("click", () => {
+                navigator.clipboard.writeText(response.value);
+                this.changeCookieCodeFormVisibility();
+            });
+        this.container
+            ?.querySelector(".cookie-code-form__submit-button")
+            ?.addEventListener("click", function (event) {
+                response.value = "";
+                event.preventDefault();
+
+                (async () => {
+                    let devneyaResponse = await generateCode(
+                        GPTGeneratorBuilder(apiKey.value),
+                        lang.value,
+                        3,
+                        prompt.value
+                    );
+                    response.value = devneyaResponse;
+            })();
+        });
+    }
+    defineFormContainer(className: string){
+        this.container = (<HTMLDivElement>document.querySelector(`.${className}`))
+    }
+
+    startCookieCoding(){
+        this.defineFormContainer("cookie-code-container")
+        this.addListeners()
+    }
+}
+
+export class CookieCodeFormInjections extends CookieCodeForm{
     popupButton: HTMLButtonElement | undefined;
     formTemplate: string;
     observer: MutationObserver | undefined;
     popupButtonContainer: HTMLElement | undefined;
-    locatePopupButtonContainer: Function;
-    constructor(locatePopupButtonContainer: Function) {
-        this.container = undefined;
+    locatePopupButtonContainer: () => HTMLElement;
+    constructor(func: () => HTMLElement) {
+        super()
         this.popupButton = undefined;
-        this.locatePopupButtonContainer = locatePopupButtonContainer;
+        this.locatePopupButtonContainer = func;
         this.formTemplate = `
         <form class="cookie-code-form">
             <div class="cookie-code-form__close">+</div>
@@ -32,12 +120,6 @@ class CookieCodeForm {
             <button class="cookie-code-form__copy-button cookie-code-btn" type="button">Copy & Close</button>
         </form>
         `;
-    }
-
-    changeCookieCodeFormVisibility() {
-        this.container
-            ?.querySelector("div .cookie-code-form")
-            ?.classList.toggle("active");
     }
 
     mutationCallback() {
@@ -66,7 +148,6 @@ class CookieCodeForm {
             "click",() => {
                 this.changeCookieCodeFormVisibility()
             }
-            
         );
     }
 
@@ -86,51 +167,8 @@ class CookieCodeForm {
         document.body.appendChild(this.container);
     }
 
-    addListeners() {
-        const apiKey = <HTMLInputElement>(
-            document.querySelector(".cookie-code-form__api-key")!
-        );
-        const prompt = <HTMLTextAreaElement>(
-            document.querySelector(".cookie-code-form__prompt")!
-        );
-        const response = <HTMLSelectElement>(
-            document.querySelector(".cookie-code-form__response")!
-        );
-        const lang = <HTMLTextAreaElement>(
-            document.querySelector(".cookie-code-form__languages-dropdown")!
-        );
-        this.container
-            ?.querySelector(".cookie-code-form__close")
-            ?.addEventListener("click", this.changeCookieCodeFormVisibility);
-        this.container
-            ?.querySelector(".cookie-code-form__copy-button")
-            ?.addEventListener("click", () => {
-                navigator.clipboard.writeText(
-                    (<HTMLTextAreaElement>(
-                        this.container?.querySelector(".cookie-code-form__response")
-                    )).value
-                );
-                this.changeCookieCodeFormVisibility();
-            });
-        this.container
-            ?.querySelector(".cookie-code-form__submit-button")
-            ?.addEventListener("click", function (event) {
-                response.value = "";
-                event.preventDefault();
-
-                (async () => {
-                    let devneyaResponse = await generateCode(
-                        GPTGeneratorBuilder(apiKey.value),
-                        lang.value,
-                        3,
-                        prompt.value
-                    );
-                    response.value = devneyaResponse;
-                })();
-            });
-    }
-
-    injectCookieCode(){
+    
+    startCookieCoding(){
         this.renderFormContainer()
         this.injectFormInContainer(this.container)
 
@@ -138,7 +176,3 @@ class CookieCodeForm {
         this.injectPopupButton(this.mutationCallback)
     }
 }
-
-
-const form = new CookieCodeForm(function() {return document.body})
-form.injectCookieCode()
