@@ -88,10 +88,12 @@ button.cookie-code-form__label {
   background-color: #fff;
 }
 
-.cookie-code-form__response {
-  min-height: 5em;
+.cookie-code-form__prompt {
+  height: 5em;
 }
 
-.cookie-code-form__prompt {
-  height: 15em;
+.cookie-code-form__response {
+  min-height: 15em;
 }
+
+
