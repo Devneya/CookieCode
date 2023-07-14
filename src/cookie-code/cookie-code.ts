@@ -1,5 +1,6 @@
 import { generateCode, GPTGeneratorBuilder } from "./devneya.js";
 
+
 /*
     <div class="cookie-code-container">
         <form class="cookie-code-form">
@@ -94,8 +95,8 @@ export class CookieCodeFormInjections extends CookieCodeForm{
     formTemplate: string;
     observer: MutationObserver | undefined;
     popupButtonContainer: HTMLElement | undefined;
-    locatePopupButtonContainer: () => HTMLElement;
-    constructor(func: () => HTMLElement) {
+    locatePopupButtonContainer: () => HTMLElement | undefined;
+    constructor(func: () => HTMLElement | undefined) {
         super()
         this.popupButton = undefined;
         this.locatePopupButtonContainer = func;
@@ -122,13 +123,15 @@ export class CookieCodeFormInjections extends CookieCodeForm{
         `;
     }
 
-    mutationCallback() {
-        this.popupButtonContainer = this.locatePopupButtonContainer()
+    /*Renders popup button when the button's container is rendered*/
+    mutationCallback(self:any) {
+        
+        self.popupButtonContainer = self.locatePopupButtonContainer()
         if (
-            !document.querySelector("cookie-code-popup-button") &&
-            this.popupButtonContainer
+            !document.querySelector(".cookie-code-popup-button") &&
+            self.popupButtonContainer
         ) {
-            this.renderPopupButton(this.popupButtonContainer)
+            self.renderPopupButton()
         }
     }
 
@@ -139,11 +142,11 @@ export class CookieCodeFormInjections extends CookieCodeForm{
             this.container.innerHTML = this.formTemplate;
         }
     }
-    renderPopupButton(container:HTMLElement){
+    renderPopupButton(){
         this.popupButton = <HTMLButtonElement>document.createElement("button");
         this.popupButton.classList.add("cookie-code-btn", "cookie-code-popup-button")
         this.popupButton.innerText = "Cookie Code"
-        container.appendChild(this.popupButton);
+        this.popupButtonContainer?.appendChild(this.popupButton);
         this.popupButton.addEventListener(
             "click",() => {
                 this.changeCookieCodeFormVisibility()
@@ -151,12 +154,16 @@ export class CookieCodeFormInjections extends CookieCodeForm{
         );
     }
 
-    injectPopupButton(mutationCallback: MutationCallback) {
+    injectPopupButton() {
         this.popupButtonContainer = this.locatePopupButtonContainer()
         if (this.popupButtonContainer) {
-            this.renderPopupButton(this.popupButtonContainer)
+            this.renderPopupButton()
         } else {
-            this.observer = new MutationObserver(mutationCallback);
+            const self = this
+            this.observer = new MutationObserver(() => {
+                // Call the callback function and pass the desired parameters
+                this.mutationCallback(self);
+              });
             this.observer.observe(document.body, { childList: true, subtree: true });
         }
     }
@@ -166,13 +173,11 @@ export class CookieCodeFormInjections extends CookieCodeForm{
         this.container.classList.add("cookie-code-container");
         document.body.appendChild(this.container);
     }
-
     
     startCookieCoding(){
         this.renderFormContainer()
         this.injectFormInContainer(this.container)
-
         this.addListeners()
-        this.injectPopupButton(this.mutationCallback)
+        this.injectPopupButton()
     }
 }

@@ -71,11 +71,11 @@ export class CookieCodeFormInjections extends CookieCodeForm {
         </form>
         `;
     }
-    mutationCallback() {
-        this.popupButtonContainer = this.locatePopupButtonContainer();
-        if (!document.querySelector("cookie-code-popup-button") &&
-            this.popupButtonContainer) {
-            this.renderPopupButton(this.popupButtonContainer);
+    mutationCallback(self) {
+        self.popupButtonContainer = self.locatePopupButtonContainer();
+        if (!document.querySelector(".cookie-code-popup-button") &&
+            self.popupButtonContainer) {
+            self.renderPopupButton();
         }
     }
     injectFormInContainer(container) {
@@ -86,22 +86,26 @@ export class CookieCodeFormInjections extends CookieCodeForm {
             this.container.innerHTML = this.formTemplate;
         }
     }
-    renderPopupButton(container) {
+    renderPopupButton() {
+        var _a;
         this.popupButton = document.createElement("button");
         this.popupButton.classList.add("cookie-code-btn", "cookie-code-popup-button");
         this.popupButton.innerText = "Cookie Code";
-        container.appendChild(this.popupButton);
+        (_a = this.popupButtonContainer) === null || _a === void 0 ? void 0 : _a.appendChild(this.popupButton);
         this.popupButton.addEventListener("click", () => {
             this.changeCookieCodeFormVisibility();
         });
     }
-    injectPopupButton(mutationCallback) {
+    injectPopupButton() {
         this.popupButtonContainer = this.locatePopupButtonContainer();
         if (this.popupButtonContainer) {
-            this.renderPopupButton(this.popupButtonContainer);
+            this.renderPopupButton();
         }
         else {
-            this.observer = new MutationObserver(mutationCallback);
+            const self = this;
+            this.observer = new MutationObserver(() => {
+                this.mutationCallback(self);
+            });
             this.observer.observe(document.body, { childList: true, subtree: true });
         }
     }
@@ -114,6 +118,6 @@ export class CookieCodeFormInjections extends CookieCodeForm {
         this.renderFormContainer();
         this.injectFormInContainer(this.container);
         this.addListeners();
-        this.injectPopupButton(this.mutationCallback);
+        this.injectPopupButton();
     }
 }

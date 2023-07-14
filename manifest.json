@@ -10,13 +10,9 @@
     "content_scripts": [
         {
             "matches": ["https://*.windmill.dev/*"],
-            "js": ["assets/js/cookie-code.js"],
+            "js": ["assets/js/bundles/cookie-code-windmill-bundle.js"],
             "css": ["assets/css/cookie-code-form.css", "assets/css/cookie-code-popup.css", "assets/css/windmill-cookie-code-style.css"]
         }
     ],
-    "web_accessible_resources": [{
-        "matches": ["<all_urls>"],
-        "resources": ["assets/js/devneya.js"]
-      }],
     "host_permissions": ["<all_urls>"]
 }
