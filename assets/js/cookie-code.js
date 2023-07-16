@@ -60,6 +60,7 @@ export class CookieCodeFormInjections extends CookieCodeForm {
             <select name="cookie-code-form__languages-dropdown" class="cookie-code-form__languages-dropdown"> 
                 <option value="JavaScript">JavaScript</option> 
                 <option value="TypeScript">TypeScript</option> 
+                <option value="Java">Java</option> 
                 <option value="Python">Python</option> 
                 <option value="Golang">Golang</option> 
                 <option value="Bash">Bash</option> 
