@@ -1,6 +1,7 @@
 (ns devneya.promptSpec
   (:require [cljs.spec.alpha :as s]
             [devneya.exec :refer [exec-code]]
+            [devneya.lint :refer [lint-check]]
             [cljs.core.async :refer [chan >!]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
@@ -24,4 +25,8 @@
 (def js-eval-description
   {:name "JavaScript" :code-check exec-code})
 
+(def js-lint-description
+  {:name "JavaScript" :code-check lint-check})
+
 (:export js-eval-description) 
+(:export js-lint-description) 

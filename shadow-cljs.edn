@@ -30,6 +30,7 @@
                devneya.gpt
                devneya.prompt
                devneya.promptSpec
+               devneya.lint
                devneya.utils]
      :exports {generateCode devneya.prompt/generate-code-promise
                getCode devneya.prompt/make-js-request
