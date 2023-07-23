@@ -1,0 +1,24 @@
+name: Clojurescript test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: install npm
+      uses: actions/checkout@v3
+    - name: install java
+      uses: actions/setup-java@v1.4.4
+      with:
+        java-version: '17'
+    - name: install shadow-cljs
+      run: npm install shadow-cljs
+    - name: run tests
+      run: npx shadow-cljs compile test
