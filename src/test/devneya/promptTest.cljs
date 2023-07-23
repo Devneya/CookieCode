@@ -38,7 +38,7 @@
                     "")]
       (async done
              (go
-               (is (= (<! res-chan) "console.log(\"Hello, world!\");"))
+               (is (= (<! res-chan) "неверно"))
                (is (= ((::call-count (meta hello-world-returner))) 1))
                (done))))))
   
