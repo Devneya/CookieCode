@@ -22,3 +22,4 @@ jobs:
       run: npm install shadow-cljs
     - name: run tests
       run: npx shadow-cljs compile test
+# TODO: This action runs tests, but no matter the result it shows success in Github, because default test runner doesn't return correct code (!= 0) in the end. Change it to cljest.

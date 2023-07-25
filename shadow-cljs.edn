@@ -62,6 +62,7 @@
    {:cookie-code
     {:init-fn devneya.cookieCodeExtension/cookie-code-extension}}}
   
+  ;; TODO: This build for tests isn't working in Github Actions, because default test runner doesn't return correct code (!= 0) in the end. Change it to cljest.
   :test
   {:target    :node-test
    :output-to "src/test/devneya/testData/tests.js"
